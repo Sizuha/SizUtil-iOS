@@ -1,9 +1,7 @@
 //
 //  SizPopupPickerView.swift
-//  AniNow
 //
-//  Created by IL KYOUNG HWANG on 2018/12/11.
-//  Copyright © 2018 G&G Service. All rights reserved.
+//  Copyright © 2018 Sizuha. All rights reserved.
 //
 
 import UIKit

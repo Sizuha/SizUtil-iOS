@@ -1,5 +1,5 @@
 //
-// G&G Service's UI Utilities for Swift(iOS)
+// UI Utilities for Swift(iOS)
 //
 // - Version: 0.1
 //

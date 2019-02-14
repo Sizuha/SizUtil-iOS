@@ -1,9 +1,7 @@
 //
 //  SizTableEditorView.swift
-//  AniNow
 //
-//  Created by IL KYOUNG HWANG on 2018/12/11.
-//  Copyright © 2018 G&G Service. All rights reserved.
+//  Copyright © 2018 Sizuha. All rights reserved.
 //
 
 import UIKit
@@ -11,6 +9,8 @@ import UIKit
 
 public let AUTO_HEIGHT: CGFloat = -1
 public let DEFAULT_HEIGHT: CGFloat = -1
+public let FILL_WIDTH: CGFloat = -10
+public let HALF_WIDTH: CGFloat = -2
 
 open class SizPropertyTableSection {
 	public var title: String? = nil
@@ -150,7 +150,7 @@ open class SizPropertyTableRow {
 	}
 }
 
-private class defaultCellPadding {
+private class DefaultCellPadding {
 	static let left = CGFloat(18)
 	static let right = CGFloat(18)
 }
@@ -410,12 +410,12 @@ open class SizCellForEditText: SizPropertyTableCell, UITextFieldDelegate {
 		let width: CGFloat
 		let x: CGFloat
 		let rightPadding = editText.clearButtonMode == .never
-			? defaultCellPadding.right
-			: defaultCellPadding.right/2
+			? DefaultCellPadding.right
+			: DefaultCellPadding.right/2
 		
 		if textLabel?.text?.isEmpty ?? true {
-			width = contentView.frame.size.width - defaultCellPadding.left - rightPadding
-			x = defaultCellPadding.left
+			width = contentView.frame.size.width - DefaultCellPadding.left - rightPadding
+			x = DefaultCellPadding.left
 		}
 		else {
 			width = contentView.frame.size.width/2 - rightPadding
@@ -545,8 +545,8 @@ open class SizCellForStepper: SizCellForEditText {
 	
 	public override func refreshViews() {
 		let rightPadding = super.textField.clearButtonMode == .never
-			? defaultCellPadding.right
-			: defaultCellPadding.right/2
+			? DefaultCellPadding.right
+			: DefaultCellPadding.right/2
 		
 		let x = contentView.frame.maxX - editorWidth - rightPadding
 
@@ -599,7 +599,7 @@ open class SizCellForOnOff: SizPropertyTableCell {
 		let width = CGFloat(49)
 		let height = CGFloat(31)
 		onOffCtrl.frame = CGRect(
-			x: contentView.frame.size.width - defaultCellPadding.right - width,
+			x: contentView.frame.size.width - DefaultCellPadding.right - width,
 			y: (contentView.frame.size.height - height)/2,
 			width: width,
 			height: height
@@ -619,6 +619,8 @@ open class SizCellForText: SizPropertyTableCell {
 		return valueLabel
 	}
 	
+	public var valueViewWidth: CGFloat = HALF_WIDTH
+	
 	public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
 		onInit()
@@ -629,19 +631,27 @@ open class SizCellForText: SizPropertyTableCell {
 	}
 	
 	open override func onInit() {
-		valueLabel = UILabel(frame: .zero)
-		valueLabel.textAlignment = .right
-		valueLabel.textColor = UIColor.darkGray
-		valueLabel.lineBreakMode = .byTruncatingTail
-		addSubview(valueLabel)
+		self.valueLabel = UILabel(frame: .zero)
+		self.valueLabel.textAlignment = .right
+		self.valueLabel.textColor = UIColor.darkGray
+		self.valueLabel.lineBreakMode = .byTruncatingTail
+		addSubview(self.valueLabel)
 	}
 	
 	public override func refreshViews() {
-		let paddingRight = accessoryType == .none ? defaultCellPadding.right : 0
-		valueLabel.frame = CGRect(
-			x: contentView.frame.size.width/2,
+		let paddingRight = accessoryType == .none ? DefaultCellPadding.right : 0
+		let width: CGFloat
+		switch self.valueViewWidth {
+		case HALF_WIDTH:
+			width = contentView.frame.size.width/2
+		default:
+			width = self.valueViewWidth > 0 ? self.valueViewWidth : contentView.frame.size.width
+		}
+		
+		self.valueLabel.frame = CGRect(
+			x: contentView.frame.size.width - width,
 			y: 0,
-			width: contentView.frame.size.width/2 - paddingRight,
+			width: width - paddingRight,
 			height: contentView.frame.size.height
 		)
 	}
@@ -700,11 +710,11 @@ open class SizCellForMultiLine: SizPropertyTableCell {
 	public static let paddingVertical = CGFloat(10)
 	
 	private var paddingRight: CGFloat {
-		return accessoryType == .none ? defaultCellPadding.right : 0
+		return accessoryType == .none ? DefaultCellPadding.right : 0
 	}
 	
 	private var editWidth: CGFloat {
-		return contentView.frame.width - defaultCellPadding.left - paddingRight
+		return contentView.frame.width - DefaultCellPadding.left - paddingRight
 	}
 	
 	public override func refreshViews() {
@@ -720,7 +730,7 @@ open class SizCellForMultiLine: SizPropertyTableCell {
 		}
 		
 		self.subTextView.frame = CGRect(
-			x: defaultCellPadding.left,
+			x: DefaultCellPadding.left,
 			y: SizCellForMultiLine.paddingVertical,
 			width: editWidth,
 			height: height - SizCellForMultiLine.paddingVertical*2
@@ -729,7 +739,7 @@ open class SizCellForMultiLine: SizPropertyTableCell {
 		subHintView.isHidden = !self.textView.text.isEmpty || self.subTextView.isEditable
 		if !subHintView.isHidden {
 			subHintView.frame = CGRect(
-				x: defaultCellPadding.left,
+				x: DefaultCellPadding.left,
 				y: (height - self.defaultRowHeight)/2,
 				width: contentView.frame.width / 2,
 				height: self.defaultRowHeight
@@ -782,7 +792,7 @@ open class SizCellForRating: SizPropertyTableCell, FloatRatingViewDelegate {
 		let width = CGFloat(180)
 		let height = CGFloat(34)
 		self.ratingView.frame = CGRect(
-			x: contentView.frame.size.width - width - defaultCellPadding.right,
+			x: contentView.frame.size.width - width - DefaultCellPadding.right,
 			y: (contentView.frame.size.height - height)/2,
 			width: width,
 			height: height

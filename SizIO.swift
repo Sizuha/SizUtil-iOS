@@ -1,9 +1,7 @@
 //
 //  SizIO.swift
-//  AniNow
 //
-//  Created by IL KYOUNG HWANG on 2018/12/11.
-//  Copyright © 2018 G&G Service. All rights reserved.
+//  Copyright © 2018 Sizuha. All rights reserved.
 //
 
 import Foundation
@@ -329,4 +327,11 @@ public class SizHttp {
 		session.dataTask(with: request, completionHandler: onComplete).resume()
 	}
 	
+}
+
+
+//--- Utils ---
+
+public func getFileSize(url: URL) -> Int {
+	return (try? FileManager.default.attributesOfItem(atPath: url.path)[.size]) as? Int ?? 0
 }
