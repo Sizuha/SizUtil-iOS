@@ -158,8 +158,8 @@ public class SizAlertBuilder {
 		set(text) { alert.message = text }
 	}
 	
-	init(title: String? = nil, messge: String? = nil, style: UIAlertController.Style = .alert) {
-		alert = UIAlertController(title: title, message: messge, preferredStyle: style)
+	init(title: String? = nil, message: String? = nil, style: UIAlertController.Style = .alert) {
+		alert = UIAlertController(title: title, message: message, preferredStyle: style)
 	}
 	
 	public func setTitle(_ title: String?) -> Self {
