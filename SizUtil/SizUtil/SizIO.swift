@@ -143,9 +143,9 @@ public func toCsvCellText(_ str: String, isLastCol: Bool = false) -> String {
 open class SizCsvParser {
 	
 	open class ColumnData {
-		var rowIdx: Int
-		var colIdx: Int
-		var data: String
+		public var rowIdx: Int
+		public var colIdx: Int
+		public var data: String
 		
 		public init(rowIdx: Int, colIdx: Int, data: String) {
 			self.rowIdx = rowIdx
@@ -153,13 +153,13 @@ open class SizCsvParser {
 			self.data = data
 		}
 		
-		var asInt: Int? {
+		public var asInt: Int? {
 			return Int(self.data)
 		}
-		var asFloat: Float? {
+		public var asFloat: Float? {
 			return Float(self.data)
 		}
-		var asBool: Bool {
+		public var asBool: Bool {
 			switch data.first {
 			case "1","t","T": return true
 			default: return false

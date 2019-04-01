@@ -8,7 +8,7 @@ import UIKit
 
 //Color extention to hex
 extension UIColor {
-	convenience init(hexString: String, alpha: CGFloat = 1.0) {
+	public convenience init(hexString: String, alpha: CGFloat = 1.0) {
 		let hexString: String = hexString.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
 		let startWithSharp = hexString.hasPrefix("#")
 		let startWithAlpha = startWithSharp && hexString.count == 9 // #aarrggbb
@@ -47,7 +47,7 @@ extension UIColor {
 		self.init(red:red, green:green, blue:blue, alpha: alphaCode)
 	}
 	
-	func toHexString(withAlpha: Bool = false) -> String {
+	public func toHexString(withAlpha: Bool = false) -> String {
 		var r:CGFloat = 0
 		var g:CGFloat = 0
 		var b:CGFloat = 0
@@ -61,14 +61,14 @@ extension UIColor {
 			: String(format:"#%06x", rgb)
 	}
 	
-	static var placeholderGray: UIColor {
+	public static var placeholderGray: UIColor {
 		return UIColor(red: 0, green: 0, blue: 0.0980392, alpha: 0.22)
 	}
 }
 
 extension UIApplication {
 	// ex) UIApplication.shared.statusBarView?
-	var statusBarView: UIView? {
+	public var statusBarView: UIView? {
 		if responds(to: Selector(("statusBar"))) {
 			return value(forKey: "statusBar") as? UIView
 		}
@@ -83,18 +83,19 @@ public enum FadeType: TimeInterval {
 }
 
 extension UIViewController {
-	func setupKeyboardDismissRecognizer(view: UIView? = nil) {
+	public func setupKeyboardDismissRecognizer(view: UIView? = nil) {
 		let tapRecognizer: UITapGestureRecognizer =
 			UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
 		
 		(view ?? self.view).addGestureRecognizer(tapRecognizer)
 	}
 	
-	@objc func dismissKeyboard() {
+	@objc
+	public func dismissKeyboard() {
 		self.view.endEditing(true)
 	}
 	
-	func popSelf(animated: Bool = true) {
+	public func popSelf(animated: Bool = true) {
 		if let naviCtrl = self.navigationController {
 			naviCtrl.popViewController(animated: animated)
 			
@@ -107,7 +108,7 @@ extension UIViewController {
 		}
 	}
 	
-	func removeAllSubViews() {
+	public func removeAllSubViews() {
 		if let subViews = self.parent?.children {
 			for v in subViews {
 				v.removeFromParent()
@@ -117,12 +118,12 @@ extension UIViewController {
 }
 
 extension String {
-	func localized(bundle: Bundle = .main, tableName: String = "Localizable", ifNotExist: String? = nil) -> String {
+	public func localized(bundle: Bundle = .main, tableName: String = "Localizable", ifNotExist: String? = nil) -> String {
 		let defaultValue = ifNotExist ?? "{\(self)}"
 		return NSLocalizedString(self, tableName: tableName, value: defaultValue, comment: "")
 	}
 	
-	func asLinkText() -> NSMutableAttributedString {
+	public func asLinkText() -> NSMutableAttributedString {
 		let attributedString = NSMutableAttributedString(string: self)
 		let range = NSRange(location: 0, length: self.count)
 		
@@ -158,7 +159,7 @@ public class SizAlertBuilder {
 		set(text) { alert.message = text }
 	}
 	
-	init(title: String? = nil, message: String? = nil, style: UIAlertController.Style = .alert) {
+	public init(title: String? = nil, message: String? = nil, style: UIAlertController.Style = .alert) {
 		alert = UIAlertController(title: title, message: message, preferredStyle: style)
 	}
 	
@@ -229,6 +230,8 @@ public func createConfirmDialog(
 //------ Swipe Actions
 
 public class SizSwipeActionBuilder {
+	
+	public init() {}
 	
 	private var actions = [UIContextualAction]()
 	

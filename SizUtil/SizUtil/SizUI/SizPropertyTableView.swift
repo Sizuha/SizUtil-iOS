@@ -800,13 +800,13 @@ open class SizCellForRating: SizPropertyTableCell, FloatRatingViewDelegate {
 	}
 	
 	/// Returns the rating value when touch events end
-	func floatRatingView(_ ratingView: FloatRatingView, didUpdate rating: Double) {
+	public func floatRatingView(_ ratingView: FloatRatingView, didUpdate rating: Double) {
 		self.delegate?.floatRatingView?(ratingView, didUpdate: rating)
 		onValueChanged?(rating)
 	}
 	
 	/// Returns the rating value as the user pans
-	func floatRatingView(_ ratingView: FloatRatingView, isUpdating rating: Double) {
+	public func floatRatingView(_ ratingView: FloatRatingView, isUpdating rating: Double) {
 		self.delegate?.floatRatingView?(ratingView, isUpdating: rating)
 	}
 }
