@@ -125,19 +125,22 @@ public class SizLineReader {
 	}
 }
 
-public func toCsvCellText(_ str: String, isLastCol: Bool = false) -> String {
+//--- CSV 関連 ----------------------------------------------------------------------------------------------------------
+
+public func toCsvCellText(_ str: String, withoutComma: Bool = false) -> String {
 	let cellData: String
 	if str.isEmpty {
 		cellData = ""
 	}
 	else if containsNeedEscapeChars(csvCellText: str) {
-		cellData = "\"" + str.replacingOccurrences(of:"\"", with:"\"\"") + "\""
+		let content = str.replacingOccurrences(of:"\"", with:"\"\"")
+		cellData = "\"\(content)\""
 	}
 	else {
 		cellData = str
 	}
 	
-	return cellData + (isLastCol ? "" : ",")
+	return cellData + (withoutComma ? "" : ",")
 }
 
 open class SizCsvParser {
@@ -236,6 +239,100 @@ open class SizCsvParser {
 	
 }
 
+public protocol CsvSerializable {
+	func toCsv() -> [String]
+	func load(from csvColumn: SizCsvParser.ColumnData)
+}
+
+public class CsvSerializer {
+	
+	public var header = ""
+	private var fileHandle: FileHandle! = nil
+	
+	public init() {}
+	
+	public func beginExport(file filepath: String) -> Bool {
+		guard FileManager.default.createFile(atPath: filepath, contents: nil) else {
+			return false
+		}
+		guard let file = FileHandle(forUpdatingAtPath: filepath) else {
+			return false
+		}
+		
+		fileHandle = file
+		
+		if !header.isEmpty {
+			push(line: header)
+		}
+		return true
+	}
+	
+	public func push(row: CsvSerializable) {
+		guard let _ = fileHandle else { return }
+		
+		var line = ""
+		var isFirst = true
+		let csvCells = row.toCsv()
+		for cell in csvCells {
+			if isFirst { isFirst = false }
+			else { line.append(",") }
+			if !cell.isEmpty {
+				line.append(toCsvCellText(cell, withoutComma: true))
+			}
+		}
+		line.append("\n")
+		
+		if let data = line.data(using: .utf8) {
+			fileHandle.write(data)
+		}
+	}
+	
+	public func push(line: String) {
+		if let data = "\(line)\n".data(using: .utf8) {
+			fileHandle.write(data)
+		}
+	}
+	
+	public func endExport() {
+		fileHandle?.closeFile()
+		fileHandle = nil
+	}
+}
+
+public class CsvDeserializer<T: CsvSerializable> {
+	
+	public var headerLineCount = 0
+	private let factory: ()->T
+	
+	required public init(factory: @escaping ()->T) {
+		self.factory = factory
+	}
+	
+	public func importFrom(file filepath: String, onLoadRow: (T)->Void) {
+		var lastItem: T? = nil
+		
+		if let input = InputStream(fileAtPath: filepath) {
+			SizCsvParser(skipLines: headerLineCount).parse(from: input) { column in
+				if column.colIdx == 0 {
+					if let prevItem = lastItem {
+						onLoadRow(prevItem)
+					}
+					lastItem = factory()
+				}
+				
+				lastItem?.load(from: column)
+			}
+		}
+		
+		if let prevItem = lastItem {
+			onLoadRow(prevItem)
+		}
+	}
+	
+}
+
+//--- HTTP 関連 ---------------------------------------------------------------------------------------------------------
+
 public class SizHttp {
 	
 	public let session: URLSession = URLSession.shared
@@ -330,7 +427,7 @@ public class SizHttp {
 }
 
 
-//--- Utils ---
+//--- Utils ------------------------------------------------------------------------------------------------------------
 
 public func getFileSize(url: URL) -> Int {
 	return (try? FileManager.default.attributesOfItem(atPath: url.path)[.size]) as? Int ?? 0
