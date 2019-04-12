@@ -16,6 +16,8 @@
 		D51ED91E2251E185005DEECD /* FloatRatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D51ED91A2251E185005DEECD /* FloatRatingView.swift */; };
 		D51ED9AA225DC372005DEECD /* SizUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = D51ED9A9225DC372005DEECD /* SizUtil.swift */; };
 		D51ED9AE225DCBF5005DEECD /* SizUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D51ED8F82251E136005DEECD /* SizUtil.framework */; };
+		D5DDAE6F22603CD900242502 /* SizSectionTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5DDAE6E22603CD900242502 /* SizSectionTableView.swift */; };
+		D5DDAE712260642300242502 /* SizTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5DDAE702260642300242502 /* SizTableView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -41,6 +43,8 @@
 		D51ED9192251E185005DEECD /* SizPropertyTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SizPropertyTableView.swift; sourceTree = "<group>"; };
 		D51ED91A2251E185005DEECD /* FloatRatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatRatingView.swift; sourceTree = "<group>"; };
 		D51ED9A9225DC372005DEECD /* SizUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SizUtil.swift; sourceTree = "<group>"; };
+		D5DDAE6E22603CD900242502 /* SizSectionTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SizSectionTableView.swift; sourceTree = "<group>"; };
+		D5DDAE702260642300242502 /* SizTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SizTableView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,12 +108,22 @@
 		D51ED9162251E175005DEECD /* SizUI */ = {
 			isa = PBXGroup;
 			children = (
+				D5DDAE722260643200242502 /* TableView */,
 				D51ED91A2251E185005DEECD /* FloatRatingView.swift */,
 				D51ED9172251E185005DEECD /* SizPopupPickerView.swift */,
-				D51ED9192251E185005DEECD /* SizPropertyTableView.swift */,
 				D51ED9182251E185005DEECD /* SizUI.swift */,
 			);
 			path = SizUI;
+			sourceTree = "<group>";
+		};
+		D5DDAE722260643200242502 /* TableView */ = {
+			isa = PBXGroup;
+			children = (
+				D5DDAE702260642300242502 /* SizTableView.swift */,
+				D5DDAE6E22603CD900242502 /* SizSectionTableView.swift */,
+				D51ED9192251E185005DEECD /* SizPropertyTableView.swift */,
+			);
+			path = TableView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -221,11 +235,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D5DDAE6F22603CD900242502 /* SizSectionTableView.swift in Sources */,
 				D51ED91C2251E185005DEECD /* SizUI.swift in Sources */,
 				D51ED91B2251E185005DEECD /* SizPopupPickerView.swift in Sources */,
 				D51ED9AA225DC372005DEECD /* SizUtil.swift in Sources */,
 				D51ED9132251E162005DEECD /* SizIO.swift in Sources */,
 				D51ED91E2251E185005DEECD /* FloatRatingView.swift in Sources */,
+				D5DDAE712260642300242502 /* SizTableView.swift in Sources */,
 				D51ED91D2251E185005DEECD /* SizPropertyTableView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

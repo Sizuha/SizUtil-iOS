@@ -173,7 +173,11 @@ open class SizPropertyTableCell: UITableViewCell, SizViewUpdater {
 	public var onValueChanged: ((_ value: Any?)->Void)? = nil
 }
 
-open class SizPropertyTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
+open class SizPropertyTableView
+	: UITableView
+	, UITableViewDelegate
+	, UITableViewDataSource
+{
 	public override init(frame: CGRect, style: UITableView.Style = .grouped) {
 		super.init(frame: frame, style: style)
 		onInit()

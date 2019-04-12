@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct YearMonthDay: Equatable {
+public struct SizYearMonthDay: Equatable {
 	
 	public let year: Int
 	public let month: Int
@@ -55,11 +55,11 @@ public struct YearMonthDay: Equatable {
 		return year*100_00 + month*100 + day
 	}
 	
-	public static func == (lhs: YearMonthDay, rhs: YearMonthDay) -> Bool {
+	public static func == (lhs: SizYearMonthDay, rhs: SizYearMonthDay) -> Bool {
 		return lhs.toInt() == rhs.toInt()
 	}
 	
-	public func add(year: Int = 0, month: Int = 0, day: Int = 0) -> YearMonthDay? {
+	public func add(year: Int = 0, month: Int = 0, day: Int = 0) -> SizYearMonthDay? {
 		guard let date = toDate() else { return nil }
 		
 		var comp = DateComponents()
@@ -68,10 +68,10 @@ public struct YearMonthDay: Equatable {
 		comp.day = day
 		
 		guard let added = calendar.date(byAdding: comp, to: date) else { return nil }
-		return YearMonthDay(from: added)
+		return SizYearMonthDay(from: added)
 	}
 	
-	public func days(from: YearMonthDay) -> Int? {
+	public func days(from: SizYearMonthDay) -> Int? {
 		guard let fromDate = from.toDate() else { return nil }
 		guard let toDate = self.toDate() else { return nil }
 		
