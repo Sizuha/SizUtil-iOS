@@ -8,13 +8,13 @@
 
 import Foundation
 
+public let stdCalendar = Calendar(identifier: .gregorian)
+
 public struct SizYearMonthDay: Equatable {
 	
 	public let year: Int
 	public let month: Int
 	public let day: Int
-	
-	let calendar = Calendar(identifier: .gregorian)
 	
 	public init(_ year: Int, _ month: Int, _ day: Int) {
 		self.year = year
@@ -23,9 +23,9 @@ public struct SizYearMonthDay: Equatable {
 	}
 	
 	public init(from date: Date) {
-		year = calendar.component(.year, from: date)
-		month = calendar.component(.month, from: date)
-		day = calendar.component(.day, from: date)
+		year = stdCalendar.component(.year, from: date)
+		month = stdCalendar.component(.month, from: date)
+		day = stdCalendar.component(.day, from: date)
 	}
 	
 	public init (from comp: DateComponents) {
@@ -34,9 +34,13 @@ public struct SizYearMonthDay: Equatable {
 		day = comp.day ?? 1
 	}
 	
+	public static var now: SizYearMonthDay {
+		return SizYearMonthDay(from: Date())
+	}
+	
 	public func toDate(timeZone: TimeZone = TimeZone.current) -> Date? {
 		let comp = toDateComponents(timeZone: timeZone)
-		return calendar.date(from: comp)
+		return stdCalendar.date(from: comp)
 	}
 	
 	public func toDateComponents(timeZone: TimeZone = TimeZone.current) -> DateComponents {
@@ -67,7 +71,7 @@ public struct SizYearMonthDay: Equatable {
 		comp.month = month
 		comp.day = day
 		
-		guard let added = calendar.date(byAdding: comp, to: date) else { return nil }
+		guard let added = stdCalendar.date(byAdding: comp, to: date) else { return nil }
 		return SizYearMonthDay(from: added)
 	}
 	
@@ -75,7 +79,7 @@ public struct SizYearMonthDay: Equatable {
 		guard let fromDate = from.toDate() else { return nil }
 		guard let toDate = self.toDate() else { return nil }
 		
-		return calendar.dateComponents([.day], from: fromDate, to: toDate).day
+		return stdCalendar.dateComponents([.day], from: fromDate, to: toDate).day
 	}
 
 }

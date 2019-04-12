@@ -173,10 +173,7 @@ open class SizPropertyTableCell: UITableViewCell, SizViewUpdater {
 	public var onValueChanged: ((_ value: Any?)->Void)? = nil
 }
 
-open class SizPropertyTableView
-	: UITableView
-	, UITableViewDelegate
-	, UITableViewDataSource
+open class SizPropertyTableView: SizTableView, UITableViewDataSource
 {
 	public override init(frame: CGRect, style: UITableView.Style = .grouped) {
 		super.init(frame: frame, style: style)
@@ -189,7 +186,6 @@ open class SizPropertyTableView
 	
 	private func onInit() {
 		dataSource = self
-		delegate = self
 		allowsMultipleSelection = false
 		allowsSelection = true
 	}
@@ -213,6 +209,8 @@ open class SizPropertyTableView
 		self.source = source
 		registerCellIds()
 	}
+	
+	//--- UITableViewDataSource delegate ---
 	
 	public func numberOfSections(in tableView: UITableView) -> Int {
 		return self.source?.count ?? 0
@@ -331,8 +329,10 @@ open class SizPropertyTableView
 		return cellView
 	}
 	
-	public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-		if let cellItem = self.source?[indexPath.section].rows[indexPath.row] {
+	//--- END ---
+	
+	open override func height(rowAt: IndexPath) -> CGFloat {
+		if let cellItem = self.source?[rowAt.section].rows[rowAt.row] {
 			let cellHieght = cellItem.height?() ?? DEFAULT_HEIGHT
 			if cellHieght >= 0 {
 				return cellHieght
@@ -342,8 +342,8 @@ open class SizPropertyTableView
 		return rowHeight
 	}
 	
-	public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-		if let cellItem = self.source?[indexPath.section].rows[indexPath.row] {
+	open override func willDisplay(cell: UITableViewCell, rowAt: IndexPath) {
+		if let cellItem = self.source?[rowAt.section].rows[rowAt.row] {
 			if let onWillDisplay = cellItem.onWillDisplay {
 				onWillDisplay(cell)
 				return
@@ -353,23 +353,21 @@ open class SizPropertyTableView
 		(cell as? SizViewUpdater)?.refreshViews()
 	}
 	
-	public func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-		tableView.endEditing(true)
-		return indexPath
+	open override func willSelect(rowAt: IndexPath) -> IndexPath? {
+		endEditing(true)
+		return rowAt
 	}
-	public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		if let cellItem = self.source?[indexPath.section].rows[indexPath.row] {
-			cellItem.onSelect?(indexPath)
+	open override func didSelect(rowAt: IndexPath) {
+		if let cellItem = self.source?[rowAt.section].rows[rowAt.row] {
+			cellItem.onSelect?(rowAt)
 		}
 	}
 	
-	public func tableView(_ tableView: UITableView, willDeselectRowAt indexPath: IndexPath) -> IndexPath? {
-		tableView.endEditing(true)
-		return indexPath
+	open override func willDeselect(rowAt: IndexPath) -> IndexPath? {
+		endEditing(true)
+		return rowAt
 	}
-	public func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-		
-	}
+	open override func didDeselect(rowAt: IndexPath) {}
 }
 
 //------ Cell: Edit Text

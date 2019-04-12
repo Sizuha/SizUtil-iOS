@@ -9,12 +9,20 @@
 import UIKit
 
 public protocol SizTableViewEvent {
+
+	func willSelect(rowAt: IndexPath) -> IndexPath?
 	func didSelect(rowAt: IndexPath)
+	func willDeselect(rowAt: IndexPath) -> IndexPath?
+	func didDeselect(rowAt: IndexPath)
+
 	func height(rowAt: IndexPath) -> CGFloat
+	
 	func willDisplay(cell: UITableViewCell, rowAt: IndexPath)
+	func willDisplayHeaderView(view: UIView, section: Int)
+
 	func leadingSwipeActions(rowAt: IndexPath) -> UISwipeActionsConfiguration?
 	func trailingSwipeActions(rowAt: IndexPath) -> UISwipeActionsConfiguration?
-	func willDisplayHeaderView(view: UIView, section: Int)
+	
 }
 
 open class SizTableView
@@ -32,17 +40,35 @@ open class SizTableView
 		delegate = self
 	}
 	
+	
+	open func willSelect(rowAt: IndexPath) -> IndexPath? { return nil }
 	open func didSelect(rowAt: IndexPath) {}
+	open func willDeselect(rowAt: IndexPath) -> IndexPath? { return nil }
+	open func didDeselect(rowAt: IndexPath) {}
+	
 	open func height(rowAt: IndexPath) -> CGFloat { return 0}
+	
 	open func willDisplay(cell: UITableViewCell, rowAt: IndexPath) {}
+	open func willDisplayHeaderView(view: UIView, section: Int) {}
+	
 	open func leadingSwipeActions(rowAt: IndexPath) -> UISwipeActionsConfiguration? { return nil }
 	open func trailingSwipeActions(rowAt: IndexPath) -> UISwipeActionsConfiguration? { return nil }
-	open func willDisplayHeaderView(view: UIView, section: Int) {}
+	
 	
 	//--- UITableViewDelegate
 	
+	public func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+		return willSelect(rowAt: indexPath)
+	}
 	public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		didSelect(rowAt: indexPath)
+	}
+	
+	public func tableView(_ tableView: UITableView, willDeselectRowAt indexPath: IndexPath) -> IndexPath? {
+		return willDeselect(rowAt: indexPath)
+	}
+	public func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+		didDeselect(rowAt: indexPath)
 	}
 	
 	public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -52,17 +78,15 @@ open class SizTableView
 	public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
 		willDisplay(cell: cell, rowAt: indexPath)
 	}
-	
+	public func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+		willDisplayHeaderView(view: view, section: section)
+	}
+
 	public func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
 		return leadingSwipeActions(rowAt: indexPath)
 	}
-	
 	public func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
 		return trailingSwipeActions(rowAt: indexPath)
-	}
-	
-	public func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-		willDisplayHeaderView(view: view, section: section)
 	}
 
 }
