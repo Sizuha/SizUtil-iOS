@@ -41,9 +41,9 @@ open class SizTableView
 	}
 	
 	
-	open func willSelect(rowAt: IndexPath) -> IndexPath? { return nil }
+	open func willSelect(rowAt: IndexPath) -> IndexPath? { return rowAt }
 	open func didSelect(rowAt: IndexPath) {}
-	open func willDeselect(rowAt: IndexPath) -> IndexPath? { return nil }
+	open func willDeselect(rowAt: IndexPath) -> IndexPath? { return rowAt }
 	open func didDeselect(rowAt: IndexPath) {}
 	
 	open func height(rowAt: IndexPath) -> CGFloat { return 0}
@@ -58,9 +58,11 @@ open class SizTableView
 	//--- UITableViewDelegate
 	
 	public func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+		print("tableView willSelectRowAt: \(indexPath.section)/\(indexPath.row)")
 		return willSelect(rowAt: indexPath)
 	}
 	public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		print("tableView didSelectRowAt: \(indexPath.section)/\(indexPath.row)")
 		didSelect(rowAt: indexPath)
 	}
 	
