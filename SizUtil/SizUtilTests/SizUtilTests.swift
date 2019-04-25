@@ -20,7 +20,7 @@ class SizUtilTests: XCTestCase {
     }
 
     func testYearMonthDay() {
-		let src = YearMonthDay(2019, 4, 10)
+		let src = SizYearMonthDay(2019, 4, 10)
 		if let date = src.toDate() {
 			print("YearMonthDay to Date:", date)
 			
@@ -36,10 +36,10 @@ class SizUtilTests: XCTestCase {
 			XCTAssert(false)
 		}
 		
-		let src2 = YearMonthDay(2019, 4, 10)
+		let src2 = SizYearMonthDay(2019, 4, 10)
 		XCTAssertEqual(src, src2)
 		
-		XCTAssertEqual(src2.add(month: -4) , YearMonthDay(2018, 12, 10))
+		XCTAssertEqual(src2.add(month: -4) , SizYearMonthDay(2018, 12, 10))
     }
 
 //    func testPerformanceExample() {
