@@ -52,7 +52,10 @@ open class SizTableView
 	open func willDisplayHeaderView(view: UIView, section: Int) {}
 	
 	open func leadingSwipeActions(rowAt: IndexPath) -> UISwipeActionsConfiguration? { return nil }
-	open func trailingSwipeActions(rowAt: IndexPath) -> UISwipeActionsConfiguration? { return nil }
+	open func trailingSwipeActions(rowAt: IndexPath) -> UISwipeActionsConfiguration? {
+		let conf = UISwipeActionsConfiguration()
+		return conf
+	}
 	
 	
 	//--- UITableViewDelegate

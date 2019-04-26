@@ -331,7 +331,7 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
 	
 	//--- END ---
 	
-	open override func height(rowAt: IndexPath) -> CGFloat {
+	override open func height(rowAt: IndexPath) -> CGFloat {
 		if let cellItem = self.source?[rowAt.section].rows[rowAt.row] {
 			let cellHieght = cellItem.height?() ?? DEFAULT_HEIGHT
 			if cellHieght >= 0 {
@@ -342,7 +342,7 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
 		return rowHeight
 	}
 	
-	open override func willDisplay(cell: UITableViewCell, rowAt: IndexPath) {
+	override open func willDisplay(cell: UITableViewCell, rowAt: IndexPath) {
 		if let cellItem = self.source?[rowAt.section].rows[rowAt.row] {
 			if let onWillDisplay = cellItem.onWillDisplay {
 				onWillDisplay(cell)
@@ -353,21 +353,21 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
 		(cell as? SizViewUpdater)?.refreshViews()
 	}
 	
-	open override func willSelect(rowAt: IndexPath) -> IndexPath? {
+	override open func willSelect(rowAt: IndexPath) -> IndexPath? {
 		endEditing(true)
 		return rowAt
 	}
-	open override func didSelect(rowAt: IndexPath) {
+	override open func didSelect(rowAt: IndexPath) {
 		if let cellItem = self.source?[rowAt.section].rows[rowAt.row] {
 			cellItem.onSelect?(rowAt)
 		}
 	}
 	
-	open override func willDeselect(rowAt: IndexPath) -> IndexPath? {
+	override open func willDeselect(rowAt: IndexPath) -> IndexPath? {
 		endEditing(true)
 		return rowAt
 	}
-	open override func didDeselect(rowAt: IndexPath) {}
+	override open func didDeselect(rowAt: IndexPath) {}
 }
 
 //------ Cell: Edit Text

@@ -96,8 +96,6 @@ open class SizSectionTableView<T>: SizTableView, UITableViewDataSource {
 	open func getCell(rowAt: IndexPath) -> UITableViewCell { return UITableViewCell() }
 	open override func height(rowAt: IndexPath) -> CGFloat { return 0 }
 	open override func willDisplay(cell: UITableViewCell, rowAt: IndexPath) {}
-	open override func leadingSwipeActions(rowAt: IndexPath) -> UISwipeActionsConfiguration? { return nil }
-	open override func trailingSwipeActions(rowAt: IndexPath) -> UISwipeActionsConfiguration? { return nil }
 	open override func willDisplayHeaderView(view: UIView, section: Int) {
 		if let header = view as? UITableViewHeaderFooterView {
 			header.textLabel?.textColor = headerTextColor
