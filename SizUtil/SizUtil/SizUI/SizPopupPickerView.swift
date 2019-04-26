@@ -7,8 +7,8 @@
 import UIKit
 
 open class SizPopupPickerViewBase: UIView {
-	private var pickerToolbar: UIToolbar!
-	private var toolbarItems = [UIBarButtonItem]()
+	public var pickerToolbar: UIToolbar!
+	public var toolbarItems = [UIBarButtonItem]()
 	private lazy var doneButtonItem: UIBarButtonItem = {
 		return UIBarButtonItem(
 			barButtonSystemItem: UIBarButtonItem.SystemItem.done,
@@ -38,7 +38,8 @@ open class SizPopupPickerViewBase: UIView {
 		self.backgroundColor = UIColor.black
 		
 		pickerToolbar = UIToolbar()
-		pickerToolbar.isTranslucent = true
+		pickerToolbar.isTranslucent = false
+		pickerToolbar.backgroundColor = UIColor.clear
 		
 		self.bounds = CGRect(x: 0, y: 0, width: screenSize.width, height: 260)
 		self.frame = CGRect(x: 0, y: parentViewHeight(), width: screenSize.width, height: 260)
@@ -87,7 +88,8 @@ public enum SizPopupPickerViewStyle {
 open class SizPopupPickerView: SizPopupPickerViewBase {
 	private var pickerView: UIPickerView!
 	private var segmentedControl: UISegmentedControl?
-	private var initSegementedControl: Bool = false
+	private var segmentedBoard: UIView! = nil
+	
 	private let segementedControlHeight: CGFloat = 29
 	private let segementedControlSuperViewHeight: CGFloat = 29 + 16
 	
@@ -130,9 +132,9 @@ open class SizPopupPickerView: SizPopupPickerViewBase {
 			)
 			
 			// Add board view
-			let v = UIView(frame: CGRect(x: 0, y: 44, width: screenSize.width, height: segementedControlSuperViewHeight))
-			v.backgroundColor = UIColor.white
-			self.addSubview(v)
+			segmentedBoard = UIView(frame: CGRect(x: 0, y: 44, width: screenSize.width, height: segementedControlSuperViewHeight))
+			segmentedBoard.backgroundColor = UIColor.clear
+			self.addSubview(segmentedBoard)
 			
 			let edge = UIEdgeInsets(top: 16, left: 16, bottom: 0, right: 16)
 			segmentedControl = UISegmentedControl(frame: CGRect(
@@ -141,8 +143,9 @@ open class SizPopupPickerView: SizPopupPickerViewBase {
 				width: screenSize.width - (edge.left + edge.right),
 				height: segementedControlHeight
 			))
+			segmentedControl?.backgroundColor = UIColor.white
 			
-			v.addSubview(segmentedControl!)
+			segmentedBoard.addSubview(segmentedControl!)
 		}
 	}
 	
