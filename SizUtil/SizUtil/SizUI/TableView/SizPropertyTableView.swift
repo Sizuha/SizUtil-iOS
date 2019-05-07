@@ -210,6 +210,12 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
 		registerCellIds()
 	}
 	
+	open override func willDisplayHeaderView(view: UIView, section: Int) {
+		if let header = view as? UITableViewHeaderFooterView {
+			header.textLabel?.text = tableView(self, titleForHeaderInSection: section)
+		}
+	}
+	
 	//--- UITableViewDataSource delegate ---
 	
 	public func numberOfSections(in tableView: UITableView) -> Int {

@@ -427,6 +427,15 @@ public class SizHttp {
 }
 
 
+//---- Extensions ------------------------------------------------------------------------------------------------------
+
+extension OutputStream {
+	func write(string: String) -> Int {
+		return write(string, maxLength: string.utf8.count)
+	}
+}
+
+
 //--- Utils ------------------------------------------------------------------------------------------------------------
 
 public func getFileSize(url: URL) -> Int {

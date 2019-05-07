@@ -99,6 +99,7 @@ open class SizSectionTableView<T>: SizTableView, UITableViewDataSource {
 	open override func willDisplayHeaderView(view: UIView, section: Int) {
 		if let header = view as? UITableViewHeaderFooterView {
 			header.textLabel?.textColor = headerTextColor
+			header.textLabel?.text = tableView(self, titleForHeaderInSection: section)
 		}
 	}
 	
