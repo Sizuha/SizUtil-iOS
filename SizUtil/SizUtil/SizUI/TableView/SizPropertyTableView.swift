@@ -62,8 +62,8 @@ open class SizPropertyTableRow {
 	let viewID: String
 	
 	public var onSelect: ((_ index: IndexPath)->Void)? = nil
-	public var onCreate: ((UITableViewCell)->Void)? = nil
-	public var onWillDisplay: ((UITableViewCell)->Void)? = nil
+	public var onCreate: ((UITableViewCell, IndexPath)->Void)? = nil
+	public var onWillDisplay: ((UITableViewCell, IndexPath)->Void)? = nil
 	public var onChanged: ((_ value: Any?)->Void)? = nil
 	
 	public init(type: CellType = .text, cellClass: AnyClass? = nil, id: String? = nil, label: String = "") {
@@ -136,11 +136,11 @@ open class SizPropertyTableRow {
 		self.onSelect = handler
 		return self
 	}
-	public func onCreate(_ handler: ((UITableViewCell)->Void)? = nil) -> Self {
+	public func onCreate(_ handler: ((UITableViewCell, IndexPath)->Void)? = nil) -> Self {
 		self.onCreate = handler
 		return self
 	}
-	public func willDisplay(_ handler: ((UITableViewCell)->Void)? = nil) -> Self {
+	public func willDisplay(_ handler: ((UITableViewCell, IndexPath)->Void)? = nil) -> Self {
 		self.onWillDisplay = handler
 		return self
 	}
@@ -191,6 +191,8 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
 	}
 	
 	private var cellIds = Set<String>()
+	
+	public var autoEndEditing = true
 	
 	public func registerCellIds() {
 		guard let source = self.source else { return }
@@ -326,7 +328,7 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
 				sizCell.onGetCellHieght = cellItem.height
 				sizCell.onValueChanged = cellItem.onChanged
 			}
-			cellItem.onCreate?(cellView)
+			cellItem.onCreate?(cellView, indexPath)
 		}
 		else {
 			assertionFailure("Wrong Cell")
@@ -351,7 +353,7 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
 	override open func willDisplay(cell: UITableViewCell, rowAt: IndexPath) {
 		if let cellItem = self.source?[rowAt.section].rows[rowAt.row] {
 			if let onWillDisplay = cellItem.onWillDisplay {
-				onWillDisplay(cell)
+				onWillDisplay(cell, rowAt)
 				return
 			}
 		}
@@ -360,7 +362,10 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
 	}
 	
 	override open func willSelect(rowAt: IndexPath) -> IndexPath? {
-		endEditing(true)
+		print("TableView: willSelect")
+		if autoEndEditing {
+			endEditing(true)
+		}
 		return rowAt
 	}
 	override open func didSelect(rowAt: IndexPath) {
@@ -370,7 +375,10 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
 	}
 	
 	override open func willDeselect(rowAt: IndexPath) -> IndexPath? {
-		endEditing(true)
+		print("TableView: willDeselect")
+		if autoEndEditing {
+			endEditing(true)
+		}
 		return rowAt
 	}
 	override open func didDeselect(rowAt: IndexPath) {}
