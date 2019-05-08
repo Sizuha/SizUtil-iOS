@@ -8,7 +8,27 @@
 
 import Foundation
 
-public let stdCalendar = Calendar(identifier: .gregorian)
+extension Calendar {
+	
+	public static var standard: Calendar {
+		return Calendar(identifier: .gregorian)
+	}
+	
+}
+
+extension Locale {
+	
+	public static let standard = Locale(identifier: "en_US_POSIX")
+	
+}
+
+extension TimeZone {
+	
+	public static let utc = TimeZone(abbreviation: "UTC")!
+	
+}
+
+fileprivate let stdCalendar = Calendar.standard
 
 public struct SizYearMonthDay: Equatable {
 	
@@ -82,4 +102,41 @@ public struct SizYearMonthDay: Equatable {
 		return stdCalendar.dateComponents([.day], from: fromDate, to: toDate).day
 	}
 
+}
+
+extension Int {
+	
+	public func times(task: ()->Void) {
+		for _ in 0..<self {
+			task()
+		}
+	}
+	
+}
+
+extension String {
+	
+	public init(timeInterval: TimeInterval, format: String = "%02d:%02d:%02d") {
+		let seconds = Int(timeInterval)
+		let h = seconds/60/60
+		let m = (seconds/60) % 60
+		let s = seconds % 60
+		self.init(format: format, h, m, s)
+	}
+	
+	public func localized(bundle: Bundle = .main, tableName: String = "Localizable", ifNotExist: String? = nil) -> String {
+		let defaultValue = ifNotExist ?? "{\(self)}"
+		return NSLocalizedString(self, tableName: tableName, value: defaultValue, comment: "")
+	}
+	
+	public func asLinkText() -> NSMutableAttributedString {
+		let attributedString = NSMutableAttributedString(string: self)
+		let range = NSRange(location: 0, length: self.count)
+		
+		attributedString.addAttribute(NSAttributedString.Key.link, value: link, range: range)
+		attributedString.addAttribute(NSAttributedString.Key.underlineStyle, value: 1, range: range)
+		
+		return attributedString
+	}
+	
 }

@@ -117,23 +117,6 @@ extension UIViewController {
 	}
 }
 
-extension String {
-	public func localized(bundle: Bundle = .main, tableName: String = "Localizable", ifNotExist: String? = nil) -> String {
-		let defaultValue = ifNotExist ?? "{\(self)}"
-		return NSLocalizedString(self, tableName: tableName, value: defaultValue, comment: "")
-	}
-	
-	public func asLinkText() -> NSMutableAttributedString {
-		let attributedString = NSMutableAttributedString(string: self)
-		let range = NSRange(location: 0, length: self.count)
-		
-		attributedString.addAttribute(NSAttributedString.Key.link, value: link, range: range)
-		attributedString.addAttribute(NSAttributedString.Key.underlineStyle, value: 1, range: range)
-		
-		return attributedString
-	}
-}
-
 extension UITableView {
 	var selectedCount: Int {
 		return self.indexPathsForSelectedRows?.count ?? 0
