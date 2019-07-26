@@ -1,8 +1,6 @@
 //
 // UI Utilities for Swift(iOS)
 //
-// - Version: 0.1
-//
 
 import UIKit
 
@@ -64,6 +62,51 @@ extension UIColor {
 	public static var placeholderGray: UIColor {
 		return UIColor(red: 0, green: 0, blue: 0.0980392, alpha: 0.22)
 	}
+	
+	public func toColor(_ color: UIColor, percentage: CGFloat) -> UIColor {
+		let percentage = max(min(percentage, 100), 0) / 100
+		switch percentage {
+		case 0: return self
+		case 1: return color
+		default:
+			var (r1, g1, b1, a1): (CGFloat, CGFloat, CGFloat, CGFloat) = (0, 0, 0, 0)
+			var (r2, g2, b2, a2): (CGFloat, CGFloat, CGFloat, CGFloat) = (0, 0, 0, 0)
+			guard self.getRed(&r1, green: &g1, blue: &b1, alpha: &a1) else { return self }
+			guard color.getRed(&r2, green: &g2, blue: &b2, alpha: &a2) else { return self }
+			
+			return UIColor(
+				red: CGFloat(r1 + (r2 - r1) * percentage),
+				green: CGFloat(g1 + (g2 - g1) * percentage),
+				blue: CGFloat(b1 + (b2 - b1) * percentage),
+				alpha: CGFloat(a1 + (a2 - a1) * percentage)
+			)
+		}
+	}
+	
+	public class func transitionColor(fromColor:UIColor, toColor:UIColor, progress:CGFloat) -> UIColor {
+		var percentage = progress < 0 ?  0 : progress
+		percentage = percentage > 1 ?  1 : percentage
+		
+		var fRed:CGFloat = 0
+		var fBlue:CGFloat = 0
+		var fGreen:CGFloat = 0
+		var fAlpha:CGFloat = 0
+		
+		var tRed:CGFloat = 0
+		var tBlue:CGFloat = 0
+		var tGreen:CGFloat = 0
+		var tAlpha:CGFloat = 0
+		
+		fromColor.getRed(&fRed, green: &fGreen, blue: &fBlue, alpha: &fAlpha)
+		toColor.getRed(&tRed, green: &tGreen, blue: &tBlue, alpha: &tAlpha)
+		
+		let red:CGFloat = (percentage * (tRed - fRed)) + fRed;
+		let green:CGFloat = (percentage * (tGreen - fGreen)) + fGreen;
+		let blue:CGFloat = (percentage * (tBlue - fBlue)) + fBlue;
+		let alpha:CGFloat = (percentage * (tAlpha - fAlpha)) + fAlpha;
+		
+		return UIColor(red: red, green: green, blue: blue, alpha: alpha)
+	}
 }
 
 extension UIApplication {
@@ -73,6 +116,19 @@ extension UIApplication {
 			return value(forKey: "statusBar") as? UIView
 		}
 		return nil
+	}
+}
+
+extension UIView {
+	public func makeRoundCornor(_ radius: CGFloat = 5) {
+		self.layer.cornerRadius = radius
+	}
+	
+	public func setMatchTo(parent: UIView) {
+		self.leftAnchor.constraint(equalTo: parent.leftAnchor).isActive = true
+		self.rightAnchor.constraint(equalTo: parent.rightAnchor).isActive = true
+		self.topAnchor.constraint(equalTo: parent.topAnchor).isActive = true
+		self.bottomAnchor.constraint(equalTo: parent.bottomAnchor).isActive = true
 	}
 }
 
@@ -127,7 +183,25 @@ public protocol SizViewUpdater {
 	func refreshViews()
 }
 
-//------ Alert Dialog
+//------ Alert Dialog --------------------------------------------------------------------------------------------------
+
+extension UIAlertController {
+	public class func showIndicatorAlert(viewController: UIViewController, message: String) -> UIAlertController {
+		let alert: UIAlertController = self.init(title: nil, message: message, preferredStyle: .alert)
+		
+		// Add Indicator
+		let indicator = UIActivityIndicatorView(style: .gray)
+		indicator.center = CGPoint(x: 25, y: 30)
+		alert.view.addSubview(indicator)
+		
+		DispatchQueue.main.async {
+			indicator.startAnimating()
+			viewController.present(alert, animated: true, completion: nil)
+		}
+		
+		return alert
+	}
+}
 
 public class SizAlertBuilder {
 	private let alert: UIAlertController
@@ -210,7 +284,9 @@ public func createConfirmDialog(
 		.create()
 }
 
-//------ Swipe Actions
+
+
+//------ Swipe Actions -------------------------------------------------------------------------------------------------
 
 public class SizSwipeActionBuilder {
 	
@@ -254,14 +330,7 @@ public class SizSwipeActionBuilder {
 }
 
 
-//------ Utils
-
-public func setMatchToParent(parent: UIView, child: UIView) {
-	child.leftAnchor.constraint(equalTo: parent.leftAnchor).isActive = true
-	child.rightAnchor.constraint(equalTo: parent.rightAnchor).isActive = true
-	child.topAnchor.constraint(equalTo: parent.topAnchor).isActive = true
-	child.bottomAnchor.constraint(equalTo: parent.bottomAnchor).isActive = true
-}
+//------ Utils ---------------------------------------------------------------------------------------------------------
 
 public func getAppShortVer() -> String {
 	return Bundle.main.infoDictionary!["CFBundleShortVersionString"] as? String ?? ""
