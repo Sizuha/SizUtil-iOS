@@ -444,6 +444,11 @@ extension OutputStream {
 	}
 }
 
+extension URL {
+	public var fileSize: Int {
+		return getFileSize(url: self)
+	}
+}
 
 //--- Utils ------------------------------------------------------------------------------------------------------------
 
