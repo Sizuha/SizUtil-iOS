@@ -129,8 +129,9 @@ open class SizPropertyTableRow {
 		self.bindData = binder
 		return self
 	}
-	public func selection(items: [String]) {
+	public func selection(items: [String]) -> Self {
 		self.selectionItems = items
+		return self
 	}
 	public func hint(_ text: String) -> Self {
 		self.hint = text
