@@ -438,6 +438,7 @@ open class SizCellForEditText: SizPropertyTableCell, UITextFieldDelegate {
 	}
 	
 	open override func onInit() {
+		super.onInit()
 		editText = UITextField(frame: .zero)
 		editText.returnKeyType = .next
 		editText.textColor = .darkGray
@@ -638,6 +639,7 @@ open class SizCellForOnOff: SizPropertyTableCell {
 	}
 	
 	open override func onInit() {
+		super.onInit()
 		onOffCtrl = UISwitch(frame: .zero)
 		onOffCtrl.addTarget(self, action: #selector(onSwitchChanged), for: .valueChanged)
 		
@@ -679,6 +681,7 @@ open class SizCellForText: SizPropertyTableCell {
 	}
 	
 	open override func onInit() {
+		super.onInit()
 		self.valueLabel = UILabel(frame: .zero)
 		self.valueLabel.textAlignment = .right
 		self.valueLabel.textColor = UIColor.darkGray
@@ -728,6 +731,7 @@ open class SizCellForMultiLine: SizPropertyTableCell {
 	}
 	
 	open override func onInit() {
+		super.onInit()
 		self.defaultRowHeight = contentView.frame.height
 		
 		let textView = UITextView()
@@ -824,6 +828,7 @@ open class SizCellForRating: SizPropertyTableCell, FloatRatingViewDelegate {
 	public var delegate: FloatRatingViewDelegate? = nil
 	
 	open override func onInit() {
+		super.onInit()
 		self.ratingView = FloatRatingView(frame: .zero)
 		self.ratingView.editable = true
 		self.ratingView.type = .wholeRatings
@@ -863,6 +868,7 @@ open class SizCellForDateTime: SizPropertyTableCell {
 	public var picker: UIDatePicker { return dateTimePickerView }
 	
 	open override func onInit() {
+		super.onInit()
 		dateTimePickerView = UIDatePicker()
 	}
 	
@@ -873,6 +879,7 @@ open class SizCellForDateTime: SizPropertyTableCell {
 open class SizCellForButton: SizPropertyTableCell {
 	
 	open override func onInit() {
+		super.onInit()
 		textLabel?.textAlignment = .left
 	}
 	
@@ -887,6 +894,7 @@ open class SizCellForSelect: SizCellForEditText, UIPickerViewDelegate, UIPickerV
 	public let picker: UIPickerView = UIPickerView()
 	
 	open override func onInit() {
+		super.onInit()
 		self.picker.delegate = self
 		self.picker.dataSource = self
 		self.picker.showsSelectionIndicator = true
