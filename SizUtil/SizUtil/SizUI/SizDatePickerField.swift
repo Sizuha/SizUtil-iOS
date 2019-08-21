@@ -22,17 +22,24 @@ class SizDatePickerField: UITextField {
 			self.datePicker.date = newValue
 		}
 	}
+	
+	public var pickerView: UIDatePicker {
+		return datePicker
+	}
 
 	required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
+		self.datePicker.datePickerMode = .date
 		onInit()
 	}
 	override init(frame: CGRect) {
 		super.init(frame: frame)
+		self.datePicker.datePickerMode = .date
 		onInit()
 	}
-	convenience init(frame: CGRect, locale: Locale, todayText: String) {
+	convenience init(frame: CGRect, mode: UIDatePicker.Mode = .date, locale: Locale, todayText: String) {
 		self.init(frame: frame)
+		self.datePicker.datePickerMode = mode
 		self.locale = locale
 		self.titleToday = todayText
 		onInit()
@@ -42,7 +49,6 @@ class SizDatePickerField: UITextField {
 		// datePickerの設定
 		self.datePicker = UIDatePicker()
 		self.datePicker.date = Date()
-		self.datePicker.datePickerMode = .date
 		self.datePicker.locale = self.locale
 		self.datePicker.addTarget(self, action: #selector(setText), for: .valueChanged)
 		
@@ -73,9 +79,7 @@ class SizDatePickerField: UITextField {
 		let doneButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(donePicker))
 		
 		let toolbarItems = [flexSpaceItem, todayButtonItem, doneButtonItem, space]
-		
 		toolbar.setItems(toolbarItems, animated: true)
-		
 		return toolbar
 	}
 	
@@ -91,10 +95,29 @@ class SizDatePickerField: UITextField {
 	
 	// datePickerの日付けをtextFieldのtextに反映させる
 	@objc private func setText() {
-		let f = DateFormatter()
-		f.dateStyle = .long
-		f.locale = self.locale
+		let f = getFormatter()
 		text = f.string(from: self.datePicker.date)
+	}
+	
+	open func getFormatter() -> DateFormatter {
+		let f = DateFormatter()
+		f.timeZone = .current
+		
+		switch datePicker.datePickerMode {
+		case .date:
+			f.dateStyle = .long
+			f.timeStyle = .none
+		case .dateAndTime:
+			f.dateStyle = .long
+			f.timeStyle = .short
+		case .time:
+			f.dateStyle = .none
+			f.timeStyle = .short
+		default: break
+		}
+		
+		f.locale = self.locale
+		return f
 	}
 	
 	// コピペ等禁止
