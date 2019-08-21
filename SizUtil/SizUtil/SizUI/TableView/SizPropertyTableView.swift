@@ -929,7 +929,7 @@ open class SizCellForSelect: SizCellForEditText, UIPickerViewDelegate, UIPickerV
 	
 	public func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
 		guard row >= 0 && row < self.selectionTitles.count else {
-			return nil
+			return self.placeholder
 		}
 		return self.selectionTitles[row]
 	}
