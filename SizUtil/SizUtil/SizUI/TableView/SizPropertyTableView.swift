@@ -299,7 +299,11 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
 				guard let textfield = cell.textField as? SizDatePickerField else { break }
 				
 				cell.placeholder = cellItem.hint
-				textfield.textAlignment = .right
+				
+				if !cellItem.label.isEmpty {
+					cell.textLabel?.text = cellItem.label
+					cell.textField.textAlignment = .right
+				}
 				
 				if let date = cellItem.bindData?() as? Date {
 					textfield.date = date
