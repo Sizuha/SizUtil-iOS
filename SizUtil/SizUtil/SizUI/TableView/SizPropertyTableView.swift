@@ -407,10 +407,7 @@ open class SizCellForEditText: SizPropertyTableCell, UITextFieldDelegate {
 	public var delegate: UITextFieldDelegate? = nil
 	public var maxLength: Int = 0
 	
-	private var editText: UITextField!
-	public var textField: UITextField {
-		return editText
-	}
+	public var textField: UITextField!
 	
 	private var contentViewRect: CGRect {
 		return CGRect(
@@ -422,28 +419,28 @@ open class SizCellForEditText: SizPropertyTableCell, UITextFieldDelegate {
 	
 	open override func onInit() {
 		super.onInit()
-		editText = UITextField(frame: .zero)
-		editText.returnKeyType = .next
-		editText.textColor = .darkGray
-		editText.delegate = self
+		textField = UITextField(frame: .zero)
+		textField.returnKeyType = .next
+		textField.textColor = .darkGray
+		textField.delegate = self
 		
-		contentView.addSubview(editText)
+		contentView.addSubview(textField)
 	}
 	
 	public var textValue: String? {
-		get { return editText.text }
-		set(value) { editText.text = value }
+		get { return textField.text }
+		set(value) { textField.text = value }
 	}
 	
 	public var placeholder: String? {
-		get { return editText.placeholder }
-		set(value) { editText.placeholder = value }
+		get { return textField.placeholder }
+		set(value) { textField.placeholder = value }
 	}
 	
 	public override func refreshViews() {
 		let width: CGFloat
 		let x: CGFloat
-		let rightPadding = editText.clearButtonMode == .never
+		let rightPadding = textField.clearButtonMode == .never
 			? DefaultCellPadding.right
 			: DefaultCellPadding.right/2
 		
@@ -456,7 +453,7 @@ open class SizCellForEditText: SizPropertyTableCell, UITextFieldDelegate {
 			x = contentView.frame.size.width/2
 		}
 		
-		editText.frame = CGRect(
+		textField.frame = CGRect(
 			x: x,
 			y: 0,
 			width: width,
