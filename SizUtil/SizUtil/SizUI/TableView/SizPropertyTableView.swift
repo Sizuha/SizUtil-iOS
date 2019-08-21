@@ -408,6 +408,12 @@ open class SizCellForEditText: SizPropertyTableCell, UITextFieldDelegate {
 	public var maxLength: Int = 0
 	
 	public var textField: UITextField!
+	public var textFieldCreator: () -> UITextField = {
+		let tf = UITextField(frame: .zero)
+		tf.returnKeyType = .next
+		tf.textColor = .darkGray
+		return tf
+	}
 	
 	private var contentViewRect: CGRect {
 		return CGRect(
@@ -419,9 +425,7 @@ open class SizCellForEditText: SizPropertyTableCell, UITextFieldDelegate {
 	
 	open override func onInit() {
 		super.onInit()
-		textField = UITextField(frame: .zero)
-		textField.returnKeyType = .next
-		textField.textColor = .darkGray
+		textField = textFieldCreator()
 		textField.delegate = self
 		
 		contentView.addSubview(textField)
