@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SizDatePickerField: UITextField {
+open class SizDatePickerField: UITextField {
 	
 	private var datePicker: UIDatePicker!
 	
@@ -27,7 +27,7 @@ class SizDatePickerField: UITextField {
 		return datePicker
 	}
 
-	required init?(coder aDecoder: NSCoder) {
+	required public init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
 		self.datePicker.datePickerMode = .date
 		onInit()
@@ -37,7 +37,7 @@ class SizDatePickerField: UITextField {
 		self.datePicker.datePickerMode = .date
 		onInit()
 	}
-	convenience init(frame: CGRect, mode: UIDatePicker.Mode = .date, locale: Locale, todayText: String) {
+	convenience public init(frame: CGRect, mode: UIDatePicker.Mode = .date, locale: Locale, todayText: String) {
 		self.init(frame: frame)
 		self.datePicker.datePickerMode = mode
 		self.locale = locale
@@ -121,14 +121,14 @@ class SizDatePickerField: UITextField {
 	}
 	
 	// コピペ等禁止
-	override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
+	override open func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
 		return false
 	}
-	override func selectionRects(for range: UITextRange) -> [UITextSelectionRect] {
+	override open func selectionRects(for range: UITextRange) -> [UITextSelectionRect] {
 		return []
 	}
 	// カーソル非表示
-	override func caretRect(for position: UITextPosition) -> CGRect {
+	override open func caretRect(for position: UITextPosition) -> CGRect {
 		return CGRect(x: 0, y: 0, width: 0, height: 0)
 	}
 	
