@@ -29,20 +29,23 @@ open class SizDatePickerField: UITextField {
 
 	required public init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
-		self.datePicker.datePickerMode = .date
 		onInit()
+		
+		self.datePicker.datePickerMode = .date
 	}
 	override init(frame: CGRect) {
 		super.init(frame: frame)
-		self.datePicker.datePickerMode = .date
 		onInit()
+		
+		self.datePicker.datePickerMode = .date
 	}
 	convenience public init(frame: CGRect, mode: UIDatePicker.Mode = .date, locale: Locale, todayText: String) {
 		self.init(frame: frame)
-		self.datePicker.datePickerMode = mode
 		self.locale = locale
 		self.titleToday = todayText
 		onInit()
+		
+		self.datePicker.datePickerMode = mode
 	}
 	
 	private func onInit() {
