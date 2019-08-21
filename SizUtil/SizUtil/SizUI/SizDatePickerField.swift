@@ -50,10 +50,10 @@ open class SizDatePickerField: UITextField {
 		self.datePicker = UIDatePicker()
 		self.datePicker.date = Date()
 		self.datePicker.locale = self.locale
-		self.datePicker.addTarget(self, action: #selector(setText), for: .valueChanged)
+		self.datePicker.addTarget(self, action: #selector(updateText), for: .valueChanged)
 		
 		// textFieldのtextに日付を表示する
-		setText()
+		updateText()
 		
 		inputView = self.datePicker
 		inputAccessoryView = createToolbar()
@@ -64,7 +64,7 @@ open class SizDatePickerField: UITextField {
 		self.titleToday = todayText
 		
 		inputAccessoryView = createToolbar()
-		setText()
+		updateText()
 	}
 	
 	// キーボードのアクセサリービューを作成する
@@ -90,11 +90,11 @@ open class SizDatePickerField: UITextField {
 	// キーボードの今日ボタンタップ時に呼ばれる
 	@objc private func todayPicker() {
 		datePicker.date = Date()
-		setText()
+		updateText()
 	}
 	
 	// datePickerの日付けをtextFieldのtextに反映させる
-	@objc private func setText() {
+	@objc public func updateText() {
 		let f = getFormatter()
 		text = f.string(from: self.datePicker.date)
 	}
