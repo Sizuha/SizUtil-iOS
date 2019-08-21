@@ -16,6 +16,7 @@
 		D51ED91E2251E185005DEECD /* FloatRatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D51ED91A2251E185005DEECD /* FloatRatingView.swift */; };
 		D51ED9AA225DC372005DEECD /* SizUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = D51ED9A9225DC372005DEECD /* SizUtil.swift */; };
 		D51ED9AE225DCBF5005DEECD /* SizUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D51ED8F82251E136005DEECD /* SizUtil.framework */; };
+		D589F312230D112B0062C345 /* SizDatePickerField.swift in Sources */ = {isa = PBXBuildFile; fileRef = D589F311230D112B0062C345 /* SizDatePickerField.swift */; };
 		D5A7FEA422EA9E2B00C76CA0 /* HBSColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A7FEA322EA9E2B00C76CA0 /* HBSColor.swift */; };
 		D5ACFB7C22BC8E0400E5C48C /* AKConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5ACFB7B22BC8E0400E5C48C /* AKConverter.swift */; };
 		D5DDAE6F22603CD900242502 /* SizSectionTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5DDAE6E22603CD900242502 /* SizSectionTableView.swift */; };
@@ -45,6 +46,7 @@
 		D51ED9192251E185005DEECD /* SizPropertyTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SizPropertyTableView.swift; sourceTree = "<group>"; };
 		D51ED91A2251E185005DEECD /* FloatRatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatRatingView.swift; sourceTree = "<group>"; };
 		D51ED9A9225DC372005DEECD /* SizUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SizUtil.swift; sourceTree = "<group>"; };
+		D589F311230D112B0062C345 /* SizDatePickerField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SizDatePickerField.swift; sourceTree = "<group>"; };
 		D5A7FEA322EA9E2B00C76CA0 /* HBSColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HBSColor.swift; sourceTree = "<group>"; };
 		D5ACFB7B22BC8E0400E5C48C /* AKConverter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AKConverter.swift; sourceTree = "<group>"; };
 		D5DDAE6E22603CD900242502 /* SizSectionTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SizSectionTableView.swift; sourceTree = "<group>"; };
@@ -117,6 +119,7 @@
 				D51ED91A2251E185005DEECD /* FloatRatingView.swift */,
 				D51ED9172251E185005DEECD /* SizPopupPickerView.swift */,
 				D51ED9182251E185005DEECD /* SizUI.swift */,
+				D589F311230D112B0062C345 /* SizDatePickerField.swift */,
 				D5A7FEA322EA9E2B00C76CA0 /* HBSColor.swift */,
 			);
 			path = SizUI;
@@ -250,6 +253,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D5DDAE6F22603CD900242502 /* SizSectionTableView.swift in Sources */,
+				D589F312230D112B0062C345 /* SizDatePickerField.swift in Sources */,
 				D5A7FEA422EA9E2B00C76CA0 /* HBSColor.swift in Sources */,
 				D5ACFB7C22BC8E0400E5C48C /* AKConverter.swift in Sources */,
 				D51ED91C2251E185005DEECD /* SizUI.swift in Sources */,

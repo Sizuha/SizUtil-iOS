@@ -35,14 +35,11 @@ open class SizPropertyTableRow {
 	public enum CellType {
 		case
 		text,
-		//description,
 		editText,
 		onOff,
 		select,
 		rating,
 		multiLine,
-		date,
-		time,
 		button,
 		stepper,
 		custome
@@ -94,9 +91,6 @@ open class SizPropertyTableRow {
 		case .multiLine:
 			self.viewID = id ?? "siz_multiLine"
 			self.cellClass = SizCellForMultiLine.self
-		case .date, .time:
-			self.viewID = id ?? "siz_datetime"
-			self.cellClass = SizCellForDateTime.self
 		case .button:
 			self.viewID = id ?? "siz_button"
 			self.cellClass = SizCellForButton.self
@@ -320,17 +314,6 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
 				cell.ratingBar.rating = cellItem.bindData?() as? Double ?? 0.0
 			}
 			
-		case .date:
-			if let cell = cellView as? SizCellForDateTime {
-				cell.textLabel?.text = cellItem.label
-				cell.picker.datePickerMode = .date
-			}
-		case .time:
-			if let cell = cellView as? SizCellForDateTime {
-				cell.textLabel?.text = cellItem.label
-				cell.picker.datePickerMode = .time
-			}
-			
 		case .custome: break
 			
 		case .multiLine:
@@ -538,6 +521,11 @@ open class SizCellForEditText: SizPropertyTableCell, UITextFieldDelegate {
 	public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
 		return self.delegate?.textFieldShouldReturn?(textField) ?? true
 	}
+	
+//	open override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
+//		return true
+//	}
+
 }
 
 //------ Cell: Stepper
@@ -860,19 +848,6 @@ open class SizCellForRating: SizPropertyTableCell, FloatRatingViewDelegate {
 	public func floatRatingView(_ ratingView: FloatRatingView, isUpdating rating: Double) {
 		self.delegate?.floatRatingView?(ratingView, isUpdating: rating)
 	}
-}
-
-//------ Cell: Date Time Picker
-open class SizCellForDateTime: SizPropertyTableCell {
-	private var dateTimePickerView: UIDatePicker!
-	public var picker: UIDatePicker { return dateTimePickerView }
-	
-	open override func onInit() {
-		super.onInit()
-		dateTimePickerView = UIDatePicker()
-	}
-	
-	public override func refreshViews() {}
 }
 
 //------ Cell: Button
