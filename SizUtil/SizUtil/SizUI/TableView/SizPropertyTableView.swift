@@ -432,6 +432,7 @@ open class SizCellForEditText: SizPropertyTableCell, UITextFieldDelegate {
 	public var maxLength: Int = 0
 	
 	public var textField: UITextField!
+	public var valueViewWidth: CGFloat = HALF_WIDTH
 	
 	private var contentViewRect: CGRect {
 		return CGRect(
@@ -473,8 +474,13 @@ open class SizCellForEditText: SizPropertyTableCell, UITextFieldDelegate {
 			x = DefaultCellPadding.left
 		}
 		else {
-			width = contentView.frame.size.width/2 - rightPadding
-			x = contentView.frame.size.width/2
+			switch self.valueViewWidth {
+			case HALF_WIDTH:
+				width = contentView.frame.size.width/2 - rightPadding
+			default:
+				width = (self.valueViewWidth > 0 ? self.valueViewWidth : contentView.frame.size.width) - rightPadding
+			}
+			x = contentView.frame.size.width - width - rightPadding
 		}
 		
 		textField.frame = CGRect(
