@@ -919,11 +919,7 @@ open class SizCellForSelect: SizCellForEditText, UIPickerViewDelegate, UIPickerV
 		super.onInit()
 		self.picker.delegate = self
 		self.picker.dataSource = self
-		self.picker.showsSelectionIndicator = true
-		if #available(iOS 13.0, *) {
-			self.picker.backgroundColor = UIColor.systemBackground
-		}
-		
+		self.picker.showsSelectionIndicator = true		
 		self.textField.inputView = self.picker
 	}
 	
