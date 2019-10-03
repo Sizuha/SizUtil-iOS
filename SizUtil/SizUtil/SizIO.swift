@@ -455,3 +455,26 @@ extension URL {
 public func getFileSize(url: URL) -> Int {
 	return (try? FileManager.default.attributesOfItem(atPath: url.path)[.size]) as? Int ?? 0
 }
+
+public func scanDirs(url: URL) -> [URL] {
+	var result = [URL]()
+	let fileManager = FileManager.default
+	do {
+		let urls = try fileManager.contentsOfDirectory(
+			at: url,
+			includingPropertiesForKeys: [.isDirectoryKey],
+			options: [.skipsHiddenFiles])
+		
+		for url in urls {
+			if url.pathExtension.isEmpty {
+				result.append(url)
+			}
+		}
+	} catch {}
+	
+	result.sort {
+		$0.absoluteString > $1.absoluteString
+	}
+	
+	return result
+}
