@@ -4,7 +4,7 @@
 
 import UIKit
 
-//Color extention to hex
+// Color extention to hex
 extension UIColor {
 	public convenience init(hexString: String, alpha: CGFloat = 1.0) {
 		let hexString: String = hexString.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
@@ -338,4 +338,37 @@ public func getAppShortVer() -> String {
 
 public func getAppBuildVer() -> String {
 	return Bundle.main.infoDictionary!["CFBundleVersion"] as? String ?? ""
+}
+
+public class PinchRect {
+	public let rect: CGRect
+	public let center: CGPoint
+	
+	public init(_ pinch: CGRect) {
+		self.rect = pinch
+		self.center = CGPoint(
+			x: Double(pinch.maxX - pinch.minX)/2.0,
+			y: Double(pinch.maxY - pinch.minY)/2.0
+		)
+	}
+	
+	public convenience init(gesture: UIPinchGestureRecognizer, in view: UIView) {
+		let touchPoint1 = gesture.location(ofTouch: 0, in: view)
+		let touchPoint2 = gesture.location(ofTouch: 1, in: view)
+		
+		let minX = min(touchPoint1.x, touchPoint2.x)
+		let maxX = max(touchPoint1.x, touchPoint2.x)
+		let minY = min(touchPoint1.y, touchPoint2.y)
+		let maxY = max(touchPoint1.y, touchPoint2.y)
+
+		self.init( CGRect(x: minX, y: minY, width: maxX-minX, height: maxY-minY) )
+	}
+	
+	public func distanceXY(from: PinchRect) -> (CGFloat,CGFloat) {
+		return (self.center.x - from.center.x, self.center.y - from.center.y)
+	}
+	
+	public func scaleXY(from: PinchRect) -> (CGFloat,CGFloat) {
+		return (self.rect.width / from.rect.width, self.rect.height / from.rect.height)
+	}
 }

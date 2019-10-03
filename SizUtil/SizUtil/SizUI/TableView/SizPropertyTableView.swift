@@ -50,7 +50,7 @@ open class SizPropertyTableRow {
 	let cellClass: AnyClass
 	
 	var label: String = ""
-	var bindData: (()->Any?)? = nil
+	var dataSource: (()->Any?)? = nil
 	var hint: String = ""
 	var textColor: UIColor? = nil
 	var tintColor: UIColor? = nil
@@ -123,8 +123,8 @@ open class SizPropertyTableRow {
 		self.label = text
 		return self
 	}
-	public func bindData(_ binder: (()->Any?)? = nil) -> Self {
-		self.bindData = binder
+	public func dataSource(_ sourceFrom: (()->Any?)? = nil) -> Self {
+		self.dataSource = sourceFrom
 		return self
 	}
 	public func selection(items: [String]) -> Self {
@@ -273,7 +273,7 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
 					cell.textField.textAlignment = .right
 				}
 				
-				let selIdx = cellItem.bindData?() as? Int ?? -1
+				let selIdx = cellItem.dataSource?() as? Int ?? -1
 				var displayText: String
 				if selIdx >= 0 && selIdx < (cellItem.selectionItems?.count ?? 0) {
 					displayText = cellItem.selectionItems?[selIdx] ?? ""
@@ -287,7 +287,7 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
 		case .editText:
 			if let cell = cellView as? SizCellForEditText {
 				cell.placeholder = cellItem.hint
-				cell.textValue = cellItem.bindData?() as? String ?? ""
+				cell.textValue = cellItem.dataSource?() as? String ?? ""
 				if !cellItem.label.isEmpty {
 					cell.textLabel?.text = cellItem.label
 					cell.textField.textAlignment = .right
@@ -305,7 +305,7 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
 					cell.textField.textAlignment = .right
 				}
 				
-				if let date = cellItem.bindData?() as? Date {
+				if let date = cellItem.dataSource?() as? Date {
 					textfield.date = date
 					textfield.updateText()
 				}
@@ -321,7 +321,7 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
 				cell.textLabel?.text = cellItem.label
 				cell.stepper.tintColor = cellItem.tintColor ?? self.tintColor
 				
-				let data = cellItem.bindData?()
+				let data = cellItem.dataSource?()
 				cell.value = data as? Double
 					?? Double(data as? Float ?? Float(data as? Int ?? 0))
 			}
@@ -329,13 +329,13 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
 		case .onOff:
 			if let cell = cellView as? SizCellForOnOff {
 				cell.textLabel?.text = cellItem.label
-				cell.switchCtrl.isOn = cellItem.bindData?() as? Bool == true
+				cell.switchCtrl.isOn = cellItem.dataSource?() as? Bool == true
 			}
 			
 		case .rating:
 			if let cell = cellView as? SizCellForRating {
 				cell.textLabel?.text = cellItem.label
-				cell.ratingBar.rating = cellItem.bindData?() as? Double ?? 0.0
+				cell.ratingBar.rating = cellItem.dataSource?() as? Double ?? 0.0
 			}
 			
 		case .custome: break
@@ -346,7 +346,7 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
 				: .none
 			
 			if let cell = cellView as? SizCellForMultiLine {
-				cell.contentText = cellItem.bindData?() as? String ?? ""
+				cell.contentText = cellItem.dataSource?() as? String ?? ""
 				cell.placeholder = cellItem.hint
 				if let textColor = cellItem.textColor {
 					cell.textView.textColor = textColor
@@ -364,7 +364,7 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
 				: .none
 			
 			cellView.textLabel?.text = cellItem.label
-			cellView.detailTextLabel?.text = cellItem.bindData?() as? String ?? ""
+			cellView.detailTextLabel?.text = cellItem.dataSource?() as? String ?? ""
 		}
 		
 		cellView.selectionStyle = cellItem.onSelect != nil ? .default : .none
