@@ -22,7 +22,7 @@ public class SizPath {
 	
 }
 
-private func containsNeedEscapeChars(csvCellText: String) -> Bool {
+fileprivate func containsNeedEscapeChars(csvCellText: String) -> Bool {
 	let specialChrs: [Character] = ["\"",",","\n"]
 	for chr in csvCellText {
 		if specialChrs.contains(chr) {
@@ -459,18 +459,18 @@ public func getFileSize(url: URL) -> Int {
 public func scanDirs(url: URL) -> [URL] {
 	var result = [URL]()
 	let fileManager = FileManager.default
-	do {
-		let urls = try fileManager.contentsOfDirectory(
-			at: url,
-			includingPropertiesForKeys: [.isDirectoryKey],
-			options: [.skipsHiddenFiles])
-		
+	
+	if let urls = try? fileManager.contentsOfDirectory(
+		at: url,
+		includingPropertiesForKeys: [.isDirectoryKey],
+		options: [.skipsHiddenFiles])
+	{
 		for url in urls {
 			if url.pathExtension.isEmpty {
 				result.append(url)
 			}
 		}
-	} catch {}
+	}
 	
 	result.sort {
 		$0.absoluteString > $1.absoluteString
