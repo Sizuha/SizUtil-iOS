@@ -260,7 +260,7 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
 		let cellView = dequeueReusableCell(withIdentifier: cellItem.viewID)
 			?? UITableViewCell()
 		
-		cellView.textLabel?.textColor = cellItem.textColor ?? UIColor.darkText
+		cellView.textLabel?.textColor = cellItem.textColor ?? UIColor.defaultText
 		
 		switch cellItem.type {
 		case .select:
@@ -446,7 +446,7 @@ open class SizCellForEditText: SizPropertyTableCell, UITextFieldDelegate {
 		super.onInit()
 		textField = UITextField(frame: .zero)
 		textField.returnKeyType = .next
-		textField.textColor = .darkGray
+		textField.textColor = .inputText
 		textField.delegate = self
 		
 		contentView.addSubview(textField)
@@ -561,7 +561,7 @@ open class SizCellForDateTime: SizCellForEditText {
 	open override func onInit() {
 		super.textField = SizDatePickerField(frame: .zero)
 		super.textField.returnKeyType = .next
-		super.textField.textColor = .darkGray
+		super.textField.textColor = .inputText
 		
 		contentView.addSubview(super.textField)
 	}
@@ -712,7 +712,7 @@ open class SizCellForText: SizPropertyTableCell {
 		super.onInit()
 		self.valueLabel = UILabel(frame: .zero)
 		self.valueLabel.textAlignment = .right
-		self.valueLabel.textColor = UIColor.darkGray
+		self.valueLabel.textColor = .inputText
 		self.valueLabel.lineBreakMode = .byTruncatingTail
 		addSubview(self.valueLabel)
 	}
@@ -765,7 +765,7 @@ open class SizCellForMultiLine: SizPropertyTableCell {
 		let textView = UITextView()
 		textView.frame = CGRect(x: 0, y: 0, width: editWidth, height: self.defaultRowHeight)
 		textView.textAlignment = .left
-		textView.textColor = .darkGray
+		textView.textColor = .inputText
 		textView.font = UIFont.systemFont(ofSize: 16)
 		textView.translatesAutoresizingMaskIntoConstraints = true
 		textView.isEditable = false
@@ -778,7 +778,13 @@ open class SizCellForMultiLine: SizPropertyTableCell {
 		
 		let placeholderView = UILabel()
 		placeholderView.isUserInteractionEnabled = false
-		placeholderView.textColor = .placeholderGray
+		
+		if #available(iOS 13.0, *) {
+			placeholderView.textColor = .placeholderText
+		} else {
+			placeholderView.textColor = .placeholderGray
+		}
+		
 		placeholderView.font = textView.font
 		self.subHintView = placeholderView
 		self.addSubview(placeholderView)

@@ -107,10 +107,25 @@ extension UIColor {
 		
 		return UIColor(red: red, green: green, blue: blue, alpha: alpha)
 	}
+	
+	/// iOS 13以上の場合は「UIColor.label」、他は「UIColor.darkText」
+	public static var defaultText: UIColor {
+		if #available(iOS 13, *) {
+			return UIColor.label
+		}
+		return UIColor.darkText
+	}
+	
+	public static var inputText: UIColor {
+		if #available(iOS 13, *) {			
+			return UIColor.secondaryLabel
+		}
+		return UIColor.darkGray
+	}
 }
 
 extension UIApplication {
-	// ex) UIApplication.shared.statusBarView?
+	@available(iOS, introduced: 11.0, obsoleted: 13.0, message: "iOS 13で廃止されました")
 	public var statusBarView: UIView? {
 		if responds(to: Selector(("statusBar"))) {
 			return value(forKey: "statusBar") as? UIView
@@ -139,6 +154,11 @@ public enum FadeType: TimeInterval {
 }
 
 extension UIViewController {
+	@available(iOS 12.0, *)
+	public var isDarkMode: Bool {
+		return traitCollection.userInterfaceStyle == .dark
+	}
+	
 	public func setupKeyboardDismissRecognizer(view: UIView? = nil) {
 		let tapRecognizer: UITapGestureRecognizer =
 			UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
@@ -171,6 +191,26 @@ extension UIViewController {
 			}
 		}
 	}
+	
+	public func changeStatusBar(color: UIColor) {
+		if #available(iOS 13, *) {
+			let statusBarHeight: CGFloat = UIApplication.shared.statusBarFrame.size.height
+
+			let statusbarView = UIView()
+			statusbarView.backgroundColor = color
+			view.addSubview(statusbarView)
+
+			statusbarView.translatesAutoresizingMaskIntoConstraints = false
+			statusbarView.heightAnchor.constraint(equalToConstant: statusBarHeight).isActive = true
+			statusbarView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 1.0).isActive = true
+			statusbarView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+			statusbarView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+		}
+		else {
+			UIApplication.shared.statusBarView?.backgroundColor = color
+		}
+	}
+
 }
 
 extension UITableView {
