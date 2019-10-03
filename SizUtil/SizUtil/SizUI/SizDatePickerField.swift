@@ -38,6 +38,9 @@ open class SizDatePickerField: UITextField {
 		onInit()
 		
 		self.datePicker.datePickerMode = .date
+		if #available(iOS 13.0, *) {
+			self.datePicker.backgroundColor = UIColor.systemBackground
+		}
 	}
 	convenience public init(frame: CGRect, mode: UIDatePicker.Mode = .date, locale: Locale, todayText: String) {
 		self.init(frame: frame)

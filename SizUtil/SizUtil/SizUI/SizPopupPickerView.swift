@@ -155,7 +155,11 @@ open class SizPopupPickerView: SizPopupPickerViewBase {
 		
 		pickerView = UIPickerView()
 		pickerView.showsSelectionIndicator = true
-		pickerView.backgroundColor = UIColor.white
+		if #available(iOS 13.0, *) {
+			pickerView.backgroundColor = .systemBackground
+		} else {
+			pickerView.backgroundColor = .white
+		}
 		pickerView.bounds = CGRect(x: 0, y: 0, width: screenSize.width, height: 216)
 		pickerView.frame = CGRect(x: 0, y: 44, width: screenSize.width, height: 216)
 		self.addSubview(pickerView)

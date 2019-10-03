@@ -771,6 +771,7 @@ open class SizCellForMultiLine: SizPropertyTableCell {
 		textView.isEditable = false
 		textView.isUserInteractionEnabled = false
 		textView.isScrollEnabled = false
+		textView.backgroundColor = .clear
 		//textView.backgroundColor = .blue // for DEBUG
 		
 		self.subTextView = textView
@@ -919,6 +920,9 @@ open class SizCellForSelect: SizCellForEditText, UIPickerViewDelegate, UIPickerV
 		self.picker.delegate = self
 		self.picker.dataSource = self
 		self.picker.showsSelectionIndicator = true
+		if #available(iOS 13.0, *) {
+			self.picker.backgroundColor = UIColor.systemBackground
+		}
 		
 		self.textField.inputView = self.picker
 	}
