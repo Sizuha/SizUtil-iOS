@@ -132,6 +132,13 @@ extension UIApplication {
 		}
 		return nil
 	}
+	
+	public func getKeyWindow() -> UIWindow? {
+		for window in windows {
+			if window.isKeyWindow { return window }
+		}
+		return nil
+	}
 }
 
 extension UIView {
