@@ -32,14 +32,117 @@ fileprivate func containsNeedEscapeChars(csvCellText: String) -> Bool {
 	return false
 }
 
-public func pointerToArray(from: UnsafeMutablePointer<UInt8>, offset: Int = 0, count: Int) -> [UInt8] {
-	var result = [UInt8].init(repeating: 0, count: count)
+public func copyAsArray(from: UnsafeMutablePointer<UInt8>, count: Int) -> [UInt8] {
+	var result = [UInt8](repeating: 0, count: count)
 	for i in 0 ..< count {
-		if i >= offset {
-			result.append(from[i])
-		}
+		result[i] = from[i]
 	}
 	return result
+}
+
+open class SizByteReader {
+	public static let IOError = NSError(domain: "IO Error", code: -1, userInfo: nil)
+	
+	public var isOpened = false
+	public var input: InputStream
+	
+	fileprivate var buffer8B: UnsafeMutablePointer<UInt8>!
+	
+	public required init(from: InputStream) {
+		self.input = from
+	}
+	
+	public convenience init?(url: URL) {
+		guard let input = InputStream(url: url) else { return nil }
+		self.init(from: input)
+	}
+
+	open func open() {
+		self.input.open()
+		
+		if self.buffer8B == nil {
+			self.buffer8B = createByteBuffer(bytes: 8)
+		}
+		self.isOpened = true
+	}
+	
+	open func close() {
+		input.close()
+		
+		self.buffer8B?.deallocate()
+		self.buffer8B = nil
+		
+		self.isOpened = false
+	}
+	
+	public func readByte() throws -> UInt8 {
+		guard
+			self.hasNext,
+			self.input.read(self.buffer8B, maxLength: 1) == 1
+		else { throw SizByteReader.IOError }
+		
+		if let resut = UnsafeMutableRawPointer(self.buffer8B)?.load(as: UInt8.self) {
+			return resut
+		}
+		else { throw SizByteReader.IOError }
+	}
+	
+	public func read<T: FixedWidthInteger>() throws -> T {
+		return try read(as: T.self)
+	}
+	
+	public func read<T: FixedWidthInteger>(as: T.Type) throws -> T {
+		let bytes = T.bitWidth / 8
+		guard
+			self.hasNext,
+			self.input.read(self.buffer8B, maxLength: bytes) == bytes
+		else { throw SizByteReader.IOError }
+		
+		if let result = UnsafeMutableRawPointer(self.buffer8B)?.load(as: T.self) {
+			return result
+		}
+		else {
+			throw SizByteReader.IOError
+		}
+	}
+
+	public var hasNext: Bool {
+		return self.input.hasBytesAvailable
+	}
+	
+	public func skip(bytes: Int) throws -> Int {
+		guard
+			bytes > 0,
+			self.hasNext
+		else { return 0 }
+		
+		let tempBuffeer = createByteBuffer(bytes: bytes)
+		defer { tempBuffeer.deallocate() }
+		
+		let readBytes = self.input.read(self.buffer8B, maxLength: bytes)
+		if readBytes > 0 {
+			return readBytes
+		}
+		else {
+			throw SizByteReader.IOError
+		}
+	}
+	
+	public func read(bytes: Int) throws -> [UInt8] {
+		guard self.hasNext else { throw SizByteReader.IOError }
+		
+		let tempBuffeer = createByteBuffer(bytes: bytes)
+		defer { tempBuffeer.deallocate() }
+		guard self.input.read(self.buffer8B, maxLength: bytes) == bytes
+		else { throw SizByteReader.IOError }
+		
+		if let result = UnsafeMutableRawPointer(tempBuffeer)?.load(as: [UInt8].self) {
+			return result
+		}
+		else {
+			throw SizByteReader.IOError
+		}
+	}
 }
 
 public class SizLineReader {
@@ -55,19 +158,14 @@ public class SizLineReader {
 	}
 	
 	public convenience init?(url: URL, bufferSize: Int = 1024) {
-		if let input = InputStream(url: url) {
-			self.init(from: input, bufferSize: bufferSize)
-		}
-		else {
-			return nil
-		}
+		guard let input = InputStream(url: url) else { return nil }
+		self.init(from: input, bufferSize: bufferSize)
 	}
 	
 	public func open() {
 		self.input.open()
 		if self.buffer == nil {
-			self.buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: bufferSize)
-			self.buffer?.initialize(repeating: 0, count: bufferSize)
+			self.buffer = createByteBuffer(bytes: bufferSize)
 		}
 		self.isOpened = true
 	}
@@ -78,6 +176,8 @@ public class SizLineReader {
 		self.buffer = nil
 		self.isOpened = false
 	}
+	
+	public var hasNext: Bool { return self.input.hasBytesAvailable }
 	
 	private func readNextBuffer() -> Int {
 		if self.input.hasBytesAvailable {
@@ -477,4 +577,10 @@ public func scanDirs(url: URL) -> [URL] {
 	}
 	
 	return result
+}
+
+public func createByteBuffer(bytes: Int) -> UnsafeMutablePointer<UInt8> {
+	let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: bytes)
+	buffer.initialize(repeating: 0, count: bytes)
+	return buffer
 }
