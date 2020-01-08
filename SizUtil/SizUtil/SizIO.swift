@@ -225,7 +225,7 @@ public class SizLineReader {
 	}
 }
 
-//--- CSV 関連 ----------------------------------------------------------------------------------------------------------
+//MARK: - CSV 関連
 
 public func toCsvCellText(_ str: String, withoutComma: Bool = false) -> String {
 	let cellData: String
@@ -440,11 +440,13 @@ public class CsvDeserializer<T: CsvSerializable> {
 	
 }
 
-//--- HTTP 関連 ---------------------------------------------------------------------------------------------------------
+//MARK: - HTTP 関連
 
 public class SizHttp {
 	
-	public let session: URLSession = URLSession.shared
+	public static var session: URLSession {
+		return URLSession.shared
+	}
 	
 	public enum HttpMethod: String {
 		case get = "GET"
@@ -473,13 +475,13 @@ public class SizHttp {
 		return result
 	}
 	
-	public func get(url: URL, onComplete: @escaping (Data?, URLResponse?, Error?) -> Void) {
+	public static func get(url: URL, onComplete: @escaping (Data?, URLResponse?, Error?) -> Void) {
 		var request: URLRequest = URLRequest(url: url)
 		request.httpMethod = HttpMethod.get.rawValue
 		session.dataTask(with: request, completionHandler: onComplete).resume()
 	}
 	
-	public func get(url: URL, params: [String:String?], onComplete: @escaping (Data?, URLResponse?, Error?) -> Void) {
+	public static func get(url: URL, params: [String:String?], onComplete: @escaping (Data?, URLResponse?, Error?) -> Void) {
 		var comp = URLComponents(url: url, resolvingAgainstBaseURL: false)!
 		var items = [URLQueryItem]()
 		for (key,data) in params {
@@ -492,15 +494,15 @@ public class SizHttp {
 		session.dataTask(with: request, completionHandler: onComplete).resume()
 	}
 	
-	public func post(url: URL, params: [String:String?], onComplete: @escaping (Data?, URLResponse?, Error?) -> Void) {
+	public static func post(url: URL, params: [String:String?], onComplete: @escaping (Data?, URLResponse?, Error?) -> Void) {
 		request(method: .post, url: url, params: params, onComplete: onComplete)
 	}
 	
-	public func postJson(url: URL, body: NSDictionary, onComplete: @escaping (Data?, URLResponse?, Error?) -> Void) throws {
+	public static func postJson(url: URL, body: NSDictionary, onComplete: @escaping (Data?, URLResponse?, Error?) -> Void) throws {
 		try requestWithJson(method: .post, url: url, body: body, onComplete: onComplete)
 	}
 	
-	public func request(method: HttpMethod, url: URL, params: [String:String?], onComplete: @escaping (Data?, URLResponse?, Error?) -> Void) {
+	public static func request(method: HttpMethod, url: URL, params: [String:String?], onComplete: @escaping (Data?, URLResponse?, Error?) -> Void) {
 		if method == .get {
 			self.get(url: url, params: params, onComplete: onComplete)
 			return
@@ -515,7 +517,7 @@ public class SizHttp {
 		session.dataTask(with: request, completionHandler: onComplete).resume()
 	}
 	
-	public func requestWithJson(method: HttpMethod, url: URL, body: NSDictionary?, onComplete: @escaping (Data?, URLResponse?, Error?) -> Void) throws {
+	public static func requestWithJson(method: HttpMethod, url: URL, body: NSDictionary?, onComplete: @escaping (Data?, URLResponse?, Error?) -> Void) throws {
 		if method == .get {
 			self.get(url: url, onComplete: onComplete)
 			return
@@ -536,7 +538,7 @@ public class SizHttp {
 }
 
 
-//---- Extensions ------------------------------------------------------------------------------------------------------
+//MARK: - Extensions
 
 extension OutputStream {
 	func write(string: String) -> Int {
@@ -550,7 +552,7 @@ extension URL {
 	}
 }
 
-//--- Utils ------------------------------------------------------------------------------------------------------------
+//MARK: - Utils
 
 public func getFileSize(url: URL) -> Int {
 	return (try? FileManager.default.attributesOfItem(atPath: url.path)[.size]) as? Int ?? 0

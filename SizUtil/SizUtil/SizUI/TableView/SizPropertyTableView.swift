@@ -426,7 +426,7 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
 	override open func didDeselect(rowAt: IndexPath) {}
 }
 
-//------ Cell: Edit Text
+//MARK: - Cell: Edit Text
 open class SizCellForEditText: SizPropertyTableCell, UITextFieldDelegate {
 	public var delegate: UITextFieldDelegate? = nil
 	public var maxLength: Int = 0
@@ -555,7 +555,7 @@ open class SizCellForEditText: SizPropertyTableCell, UITextFieldDelegate {
 
 }
 
-//------ Cell: DateTime
+//MARK: - Cell: DateTime
 open class SizCellForDateTime: SizCellForEditText {
 	
 	open override func onInit() {
@@ -568,7 +568,7 @@ open class SizCellForDateTime: SizCellForEditText {
 	
 }
 
-//------ Cell: Stepper
+//MARK: - Cell: Stepper
 open class SizCellForStepper: SizCellForEditText {
 	
 	private var subStepper: UIStepper!
@@ -659,7 +659,7 @@ open class SizCellForStepper: SizCellForEditText {
 	
 }
 
-//------ Cell: OnOff
+//MARK: - Cell: OnOff
 open class SizCellForOnOff: SizPropertyTableCell {
 	private var onOffCtrl: UISwitch!
 	public var switchCtrl: UISwitch {
@@ -690,7 +690,7 @@ open class SizCellForOnOff: SizPropertyTableCell {
 	}
 }
 
-//------ Cell: Text
+//MARK: - Cell: Text
 open class SizCellForText: SizPropertyTableCell {
 	private var valueLabel: UILabel!
 	open override var detailTextLabel: UILabel? {
@@ -736,7 +736,7 @@ open class SizCellForText: SizPropertyTableCell {
 	}
 }
 
-//------ Cell: MultiLine Text
+//MARK: - Cell: MultiLine Text
 open class SizCellForMultiLine: SizPropertyTableCell {
 	private var defaultRowHeight: CGFloat!
 	
@@ -855,7 +855,7 @@ open class SizCellForMultiLine: SizPropertyTableCell {
 	open override var detailTextLabel: UILabel? { return nil }
 }
 
-//------ Cell: Star Rating
+//MARK: - Cell: Star Rating
 open class SizCellForRating: SizPropertyTableCell, FloatRatingViewDelegate {
 	private var ratingView: FloatRatingView!
 	public var ratingBar: FloatRatingView { return self.ratingView }
@@ -897,7 +897,7 @@ open class SizCellForRating: SizPropertyTableCell, FloatRatingViewDelegate {
 	}
 }
 
-//------ Cell: Button
+//MARK: - Cell: Button
 open class SizCellForButton: SizPropertyTableCell {
 	
 	open override func onInit() {
@@ -909,7 +909,7 @@ open class SizCellForButton: SizPropertyTableCell {
 
 }
 
-//------ Cell: Sellect
+//MARK: - Cell: Sellect
 open class SizCellForSelect: SizCellForEditText, UIPickerViewDelegate, UIPickerViewDataSource {
 	
 	var selectionTitles: [String]! = nil
