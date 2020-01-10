@@ -1,24 +1,7 @@
-//
-//  SizUtilTests.swift
-//  SizUtilTests
-//
-//  Created by IL KYOUNG HWANG on 2019/04/01.
-//  Copyright © 2019 Sizuha. All rights reserved.
-//
-
 import XCTest
 @testable import SizUtil
 
-class SizUtilTests: XCTestCase {
-
-    override func setUp() {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
+final class SizUtilTests: XCTestCase {
     func testYearMonthDay() {
 		let src = SizYearMonthDay(2019, 4, 10)
 		if let date = src.toDate() {
@@ -40,15 +23,8 @@ class SizUtilTests: XCTestCase {
 		XCTAssertEqual(src, src2)
 		
 		XCTAssertEqual(src2.add(month: -4) , SizYearMonthDay(2018, 12, 10))
-    }
+	}
 
-//    func testPerformanceExample() {
-//        // This is an example of a performance test case.
-//        self.measure {
-//            // Put the code you want to measure the time of here.
-//        }
-//    }
-	
 	func testRegex() {
 		let sample = "123456789"
 		XCTAssertTrue((?="[0-9]+") ~= sample)
@@ -57,4 +33,8 @@ class SizUtilTests: XCTestCase {
 		XCTAssertTrue(sample ~= (?="[A-Z]+"))
 	}
 
+    static var allTests = [
+        ("testYearMonthDay", testYearMonthDay),
+		("testRegex", testRegex),
+    ]
 }
