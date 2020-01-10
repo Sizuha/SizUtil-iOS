@@ -9,29 +9,22 @@
 import Foundation
 
 extension Calendar {
-	
 	public static var standard: Calendar {
 		return Calendar(identifier: .gregorian)
 	}
-	
 }
 
 extension Locale {
-	
 	public static let standard = Locale(identifier: "en_US_POSIX")
-	
 }
 
 extension TimeZone {
-	
 	public static let utc = TimeZone(abbreviation: "UTC")!
-	
 }
 
 fileprivate let stdCalendar = Calendar.standard
 
 public struct SizYearMonthDay: Equatable {
-	
 	public let year: Int
 	public let month: Int
 	public let day: Int
@@ -101,21 +94,25 @@ public struct SizYearMonthDay: Equatable {
 		
 		return stdCalendar.dateComponents([.day], from: fromDate, to: toDate).day
 	}
-
 }
 
 extension Int {
-	
-	public func times(task: ()->Void) {
+	public func times(do task: ()->Void) {
 		for _ in 0..<self {
 			task()
 		}
 	}
-	
 }
 
+extension Array {
+	public subscript(at index: Index) -> Element? {
+		return indices.contains(index) ? self[index] : nil
+	}
+}
+
+prefix operator ?=
+
 extension String {
-	
 	public init(timeInterval: TimeInterval, format: String = "%02d:%02d:%02d") {
 		let seconds = Int(timeInterval)
 		let h = seconds/60/60
@@ -139,11 +136,33 @@ extension String {
 		return attributedString
 	}
 	
+	public func getNSRange() -> NSRange {
+		return NSRange(location: 0, length: self.count)
+	}
+	
+	public static prefix func ?= (pattern: String) -> NSRegularExpression? {
+		return try? NSRegularExpression(pattern: pattern, options: [])
+	}
+	public static func ~= (left: String, right: NSRegularExpression?) -> Bool {
+		return left.isMatch(right)
+	}
+	public static func ~= (left: NSRegularExpression?, right: String) -> Bool {
+		return right.isMatch(left)
+	}
+
+	public func isMatch(_ regex: NSRegularExpression?) -> Bool {
+		return regex?.numberOfMatches(in: self, options: [], range: getNSRange()) ?? 0 > 0
+	}
+	public func isNotMatch(_ regex: NSRegularExpression?) -> Bool {
+		return !isMatch(regex)
+	}
 }
 
-public func convertToWav(from fromPath: URL, to toPath: URL, options: AKConverter.Options, onComplete: @escaping (_ result: Bool)->Void) {
-	let converter = AKConverter(inputURL: fromPath, outputURL: toPath, options: options)
-	converter.start(completionHandler: { error in
-		onComplete(error != nil)
-	})
+extension NSRegularExpression {
+	public func isMatch(_ string: String) -> Bool {
+		return numberOfMatches(in: string, options: [], range: string.getNSRange()) > 0
+	}
+	public func isNotMatch(_ string: String) -> Bool {
+		return !isMatch(string)
+	}
 }

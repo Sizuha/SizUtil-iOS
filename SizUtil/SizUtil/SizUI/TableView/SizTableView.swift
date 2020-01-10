@@ -20,7 +20,9 @@ public protocol SizTableViewEvent {
 	func willDisplay(cell: UITableViewCell, rowAt: IndexPath)
 	func willDisplayHeaderView(view: UIView, section: Int)
 
+	@available(iOS 11.0, *)
 	func leadingSwipeActions(rowAt: IndexPath) -> UISwipeActionsConfiguration?
+	@available(iOS 11.0, *)
 	func trailingSwipeActions(rowAt: IndexPath) -> UISwipeActionsConfiguration?
 	
 }
@@ -51,14 +53,16 @@ open class SizTableView
 	open func willDisplay(cell: UITableViewCell, rowAt: IndexPath) {}
 	open func willDisplayHeaderView(view: UIView, section: Int) {}
 	
+	@available(iOS 11.0, *)
 	open func leadingSwipeActions(rowAt: IndexPath) -> UISwipeActionsConfiguration? { return nil }
+	@available(iOS 11.0, *)
 	open func trailingSwipeActions(rowAt: IndexPath) -> UISwipeActionsConfiguration? {
 		let conf = UISwipeActionsConfiguration()
 		return conf
 	}
 	
 	
-	//--- UITableViewDelegate
+	//MARK: - UITableViewDelegate
 	
 	public func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
 		print("tableView willSelectRowAt: \(indexPath.section)/\(indexPath.row)")
@@ -87,9 +91,11 @@ open class SizTableView
 		willDisplayHeaderView(view: view, section: section)
 	}
 
+	@available(iOS 11.0, *)
 	public func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
 		return leadingSwipeActions(rowAt: indexPath)
 	}
+	@available(iOS 11.0, *)
 	public func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
 		return trailingSwipeActions(rowAt: indexPath)
 	}

@@ -199,6 +199,7 @@ extension UIViewController {
 		}
 	}
 	
+	@available(iOS 11.0, *)
 	public func changeStatusBar(color: UIColor) {
 		if #available(iOS 13, *) {
 			let statusBarHeight: CGFloat = UIApplication.shared.statusBarFrame.size.height
@@ -230,7 +231,7 @@ public protocol SizViewUpdater {
 	func refreshViews()
 }
 
-//------ Alert Dialog --------------------------------------------------------------------------------------------------
+//MARK: - Alert Dialog
 
 extension UIAlertController {
 	public class func showIndicatorAlert(viewController: UIViewController, message: String) -> UIAlertController {
@@ -333,8 +334,9 @@ public func createConfirmDialog(
 
 
 
-//------ Swipe Actions -------------------------------------------------------------------------------------------------
+//MARK: - Swipe Actions
 
+@available(iOS 11.0, *)
 public class SizSwipeActionBuilder {
 	
 	public init() {}
@@ -377,7 +379,7 @@ public class SizSwipeActionBuilder {
 }
 
 
-//------ Utils ---------------------------------------------------------------------------------------------------------
+// MARK: - Utils
 
 public func getAppShortVer() -> String {
 	return Bundle.main.infoDictionary!["CFBundleShortVersionString"] as? String ?? ""

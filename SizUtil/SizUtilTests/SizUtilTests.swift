@@ -48,5 +48,13 @@ class SizUtilTests: XCTestCase {
 //            // Put the code you want to measure the time of here.
 //        }
 //    }
+	
+	func testRegex() {
+		let sample = "123456789"
+		XCTAssertTrue((?="[0-9]+") ~= sample)
+		XCTAssertTrue(sample ~= (?="[0-9]+"))
+		XCTAssertTrue((?="[A-Z]+") ~= sample)
+		XCTAssertTrue(sample ~= (?="[A-Z]+"))
+	}
 
 }

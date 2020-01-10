@@ -229,7 +229,7 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
 		}
 	}
 	
-	//--- UITableViewDataSource delegate ---
+	//MARK: - UITableViewDataSource delegate
 	
 	public func numberOfSections(in tableView: UITableView) -> Int {
 		return self.source?.count ?? 0
@@ -376,7 +376,7 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
 		return cellView
 	}
 	
-	//--- END ---
+	//MARK: --- END ---
 	
 	override open func height(rowAt: IndexPath) -> CGFloat {
 		if let cellItem = self.source?[rowAt.section].rows[rowAt.row] {

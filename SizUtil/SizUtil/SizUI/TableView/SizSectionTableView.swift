@@ -103,7 +103,7 @@ open class SizSectionTableView<T>: SizTableView, UITableViewDataSource {
 		}
 	}
 	
-	//--- UITableViewDataSource delegates ---
+	//MARK: - UITableViewDataSource delegates
 	
 	public func numberOfSections(in tableView: UITableView) -> Int {
 		return self.sections.count
