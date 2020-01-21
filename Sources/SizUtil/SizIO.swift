@@ -463,10 +463,15 @@ public class SizHttp {
 	}
 	
 	public static func makeFormParamStr(_ params: [String:String?]) -> String {
-		var result = ""
+		var result = ""		
+		var isFirst = true
 		
 		for (key,data) in params {
 			if let data = data {
+				if isFirst { isFirst = false } else {
+					result.append("&")
+				}
+				
 				let encoded = urlQueryEncode(data)
 				result.append("\(key)=\(encoded)")
 			}
