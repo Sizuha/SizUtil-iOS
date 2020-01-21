@@ -510,8 +510,7 @@ public class SizHttp {
 		
 		var request: URLRequest = URLRequest(url: url)
 		request.httpMethod = method.rawValue
-		request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-		request.addValue("application/json", forHTTPHeaderField: "Accept")
+//		request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
 		request.httpBody = SizHttp.makeFormParamStr(params).data(using: .utf8)
 		
 		session.dataTask(with: request, completionHandler: onComplete).resume()
