@@ -4,6 +4,7 @@
 
 import UIKit
 
+// MARK: - UIColor
 // Color extention to hex
 public extension UIColor {
 	convenience init(hexString: String, alpha: CGFloat = 1.0) {
@@ -124,6 +125,8 @@ public extension UIColor {
 	}
 }
 
+
+// MARK: - UIApplication
 public extension UIApplication {
 	@available(iOS, introduced: 11.0, obsoleted: 13.0, message: "iOS 13で廃止されました")
 	var statusBarView: UIView? {
@@ -141,6 +144,7 @@ public extension UIApplication {
 	}
 }
 
+// MARK: - UIView
 public extension UIView {
 	func makeRoundCornor(_ radius: CGFloat = 5) {
 		self.layer.cornerRadius = radius
@@ -152,6 +156,13 @@ public extension UIView {
 		self.topAnchor.constraint(equalTo: parent.topAnchor).isActive = true
 		self.bottomAnchor.constraint(equalTo: parent.bottomAnchor).isActive = true
 	}
+	
+	var isDarkMode: Bool {
+		if #available(iOS 12.0, *) {
+			return traitCollection.userInterfaceStyle == .dark
+		}
+		return false
+	}
 }
 
 public enum FadeType: TimeInterval {
@@ -160,10 +171,14 @@ public enum FadeType: TimeInterval {
 	Slow = 1.0
 }
 
+// MARK: - UIViewController
+
 public extension UIViewController {
-	@available(iOS 12.0, *)
 	var isDarkMode: Bool {
-		return traitCollection.userInterfaceStyle == .dark
+		if #available(iOS 12.0, *) {
+			return traitCollection.userInterfaceStyle == .dark
+		}
+		return false
 	}
 	
 	func setupKeyboardDismissRecognizer(view: UIView? = nil) {
@@ -220,6 +235,8 @@ public extension UIViewController {
 	}
 
 }
+
+// MARK: - UITableView
 
 public extension UITableView {
 	var selectedCount: Int {
@@ -379,15 +396,7 @@ public class SizSwipeActionBuilder {
 }
 
 
-// MARK: - Utils
-
-public func getAppShortVer() -> String {
-	return Bundle.main.infoDictionary!["CFBundleShortVersionString"] as? String ?? ""
-}
-
-public func getAppBuildVer() -> String {
-	return Bundle.main.infoDictionary!["CFBundleVersion"] as? String ?? ""
-}
+// MARK: - PinchRect
 
 public class PinchRect {
 	public let rect: CGRect

@@ -166,3 +166,11 @@ public extension NSRegularExpression {
 		return !isMatch(string)
 	}
 }
+
+public func getAppShortVer() -> String {
+	return Bundle.main.infoDictionary!["CFBundleShortVersionString"] as? String ?? ""
+}
+
+public func getAppBuildVer() -> String {
+	return Bundle.main.infoDictionary!["CFBundleVersion"] as? String ?? ""
+}
