@@ -97,7 +97,7 @@ public struct SizYearMonthDay: Equatable {
 }
 
 public struct SizHourMinSec {
-	var hour = 0
+	public var hour = 0
 	private var minute_raw = 0
 	private var second_raw = 0
 	
