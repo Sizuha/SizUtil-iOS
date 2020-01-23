@@ -251,11 +251,16 @@ public protocol SizViewUpdater {
 //MARK: - Alert Dialog
 
 public extension UIAlertController {
-	class func showIndicatorAlert(viewController: UIViewController, message: String) -> UIAlertController {
+	class func showIndicatorAlert(
+		viewController: UIViewController,
+		message: String,
+		style: UIActivityIndicatorView.Style = .gray)
+		-> UIAlertController
+	{
 		let alert: UIAlertController = self.init(title: nil, message: message, preferredStyle: .alert)
 		
 		// Add Indicator
-		let indicator = UIActivityIndicatorView(style: .gray)
+		let indicator = UIActivityIndicatorView(style: style)
 		indicator.center = CGPoint(x: 25, y: 30)
 		alert.view.addSubview(indicator)
 		
