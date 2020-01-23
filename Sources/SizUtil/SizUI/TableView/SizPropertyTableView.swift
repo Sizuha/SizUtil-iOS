@@ -231,6 +231,10 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
 	
 	//MARK: - UITableViewDataSource delegate
 	
+	open override var numberOfSections: Int {
+		return self.source?.count ?? 0
+	}
+	
 	public func numberOfSections(in tableView: UITableView) -> Int {
 		return self.source?.count ?? 0
 	}
