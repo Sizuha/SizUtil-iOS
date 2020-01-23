@@ -96,6 +96,72 @@ public struct SizYearMonthDay: Equatable {
 	}
 }
 
+public struct SizHourMinSec {
+	var hour = 0
+	private var minute_raw = 0
+	private var second_raw = 0
+	
+	public init() {}
+	
+	public init(hour: Int, minute: Int, second: Int) {
+		self.hour = hour
+		self.minute = minute
+		self.second = second
+	}
+	
+	public init?(from rawVal: Int?) {
+		guard let rawVal = rawVal else { return nil }
+		
+		let h: Int = rawVal/100_00
+		let m: Int = rawVal/100 - h*100
+		let s: Int = rawVal - h*100_00 - m*100
+		
+		guard
+			(0..<60).contains(m),
+			(0..<60).contains(s)
+		else { return nil }
+		
+		self.hour = h
+		self.minute_raw = m
+		self.second_raw = s
+	}
+	
+	public init?(from text: String) {
+		guard let rawVal = Int(text) else {
+			return nil
+		}
+		
+		self.init(from: rawVal)
+	}
+	
+	public init(from date: Date) {
+		let cal = Calendar.standard
+		self.hour = cal.component(.hour, from: date)
+		self.minute_raw = cal.component(.minute, from: date)
+		self.second_raw = cal.component(.second, from: date)
+	}
+
+	public var minute: Int {
+		get { return self.minute_raw }
+		set {
+			assert((0..<60).contains(newValue))
+			self.minute_raw = newValue
+		}
+	}
+	
+	public var second: Int {
+		get { return self.second_raw }
+		set {
+			assert((0..<60).contains(newValue))
+			self.second_raw = newValue
+		}
+	}
+	
+	public func toInt() -> Int {
+		return self.hour*100_00 + self.minute_raw*100 + self.second_raw
+	}
+}
+
 public extension Int {
 	func times(do task: ()->Void) {
 		for _ in 0..<self {
