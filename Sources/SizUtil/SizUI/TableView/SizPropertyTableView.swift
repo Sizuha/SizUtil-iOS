@@ -231,7 +231,7 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
 	
 	//MARK: - UITableViewDataSource delegate
 	
-	public func numberOfSections(in tableView: UITableView) -> Int {
+	open func numberOfSections(in tableView: UITableView) -> Int {
 		return self.source?.count ?? 0
 	}
 	
