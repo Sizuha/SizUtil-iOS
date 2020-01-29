@@ -490,11 +490,7 @@ open class SizCellForEditText: SizPropertyTableCell, UITextFieldDelegate {
 			height: contentView.frame.size.height
 		)
 	}
-	
-	@objc private func onTextChanged(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
-		onValueChanged?(textField.text)
-	}
-	
+		
 	//--- UITextFieldDelegate ---
 	
 	// return NO to disallow editing.
