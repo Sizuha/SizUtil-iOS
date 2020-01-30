@@ -31,6 +31,9 @@ open class SizPropertyTableSection {
 	}
 }
 
+public typealias TableViewIndexProc = (_ index: IndexPath)->Void
+public typealias TableViewCellProc = (UITableViewCell, IndexPath)->Void
+
 open class SizPropertyTableRow {
 	public enum CellType {
 		case
@@ -48,7 +51,8 @@ open class SizPropertyTableRow {
 	
 	let type: CellType
 	let cellClass: AnyClass
-	
+	let viewID: String
+
 	var label: String = ""
 	var dataSource: (()->Any?)? = nil
 	var hint: String = ""
@@ -57,19 +61,17 @@ open class SizPropertyTableRow {
 	var height: (()->CGFloat)? = nil
 	var selectionItems: [String]? = nil
 	
-	let viewID: String
-	
-	public var onSelect: ((_ index: IndexPath)->Void)? = nil
-	public var onCreate: ((UITableViewCell, IndexPath)->Void)? = nil
-	public var onWillDisplay: ((UITableViewCell, IndexPath)->Void)? = nil
+	public var onSelect: TableViewIndexProc? = nil
+	public var onCreate: TableViewCellProc? = nil
+	public var onWillDisplay: TableViewCellProc? = nil
 	public var onChanged: ((_ value: Any?)->Void)? = nil
 	
 	public init(
 		type: CellType = .text,
 		cellClass: AnyClass? = nil,
 		id: String? = nil,
-		label: String = ""
-	) {
+		label: String = "")
+	{
 		self.type = cellClass != nil ? .custome : type
 		self.label = label
 		
@@ -143,15 +145,15 @@ open class SizPropertyTableRow {
 		self.tintColor = color
 		return self
 	}
-	public func onSelect(_ handler: ((_ index: IndexPath)->Void)? = nil) -> Self {
+	public func onSelect(_ handler: TableViewIndexProc? = nil) -> Self {
 		self.onSelect = handler
 		return self
 	}
-	public func onCreate(_ handler: ((UITableViewCell, IndexPath)->Void)? = nil) -> Self {
+	public func onCreate(_ handler: TableViewCellProc? = nil) -> Self {
 		self.onCreate = handler
 		return self
 	}
-	public func willDisplay(_ handler: ((UITableViewCell, IndexPath)->Void)? = nil) -> Self {
+	public func willDisplay(_ handler: TableViewCellProc? = nil) -> Self {
 		self.onWillDisplay = handler
 		return self
 	}
@@ -182,6 +184,8 @@ open class SizPropertyTableCell: UITableViewCell, SizViewUpdater {
 	
 	public var onGetCellHieght: (()->CGFloat)? = nil
 	public var onValueChanged: ((_ value: Any?)->Void)? = nil
+	
+	open class var cellType: SizPropertyTableRow.CellType { .custome }
 }
 
 open class SizPropertyTableView: SizTableView, UITableViewDataSource
@@ -428,6 +432,9 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
 
 //MARK: - Cell: Edit Text
 open class SizCellForEditText: SizPropertyTableCell, UITextFieldDelegate {
+	
+	open override class var cellType: SizPropertyTableRow.CellType { .editText }
+	
 	public var delegate: UITextFieldDelegate? = nil
 	public var maxLength: Int = 0
 	
@@ -554,6 +561,8 @@ open class SizCellForEditText: SizPropertyTableCell, UITextFieldDelegate {
 //MARK: - Cell: DateTime
 open class SizCellForDateTime: SizCellForEditText {
 	
+	open override class var cellType: SizPropertyTableRow.CellType { .datetime }
+	
 	open override func onInit() {
 		super.textField = SizDatePickerField(frame: .zero)
 		super.textField.returnKeyType = .next
@@ -566,6 +575,8 @@ open class SizCellForDateTime: SizCellForEditText {
 
 //MARK: - Cell: Stepper
 open class SizCellForStepper: SizCellForEditText {
+	
+	open override class var cellType: SizPropertyTableRow.CellType { .stepper }
 	
 	private var subStepper: UIStepper!
 	public var stepper: UIStepper { return self.subStepper }
@@ -657,6 +668,9 @@ open class SizCellForStepper: SizCellForEditText {
 
 //MARK: - Cell: OnOff
 open class SizCellForOnOff: SizPropertyTableCell {
+	
+	open override class var cellType: SizPropertyTableRow.CellType { .onOff }
+	
 	private var onOffCtrl: UISwitch!
 	public var switchCtrl: UISwitch {
 		return onOffCtrl
@@ -688,6 +702,9 @@ open class SizCellForOnOff: SizPropertyTableCell {
 
 //MARK: - Cell: Text
 open class SizCellForText: SizPropertyTableCell {
+	
+	open override class var cellType: SizPropertyTableRow.CellType { .text }
+	
 	private var valueLabel: UILabel!
 	open override var detailTextLabel: UILabel? {
 		return valueLabel
@@ -734,6 +751,9 @@ open class SizCellForText: SizPropertyTableCell {
 
 //MARK: - Cell: MultiLine Text
 open class SizCellForMultiLine: SizPropertyTableCell {
+	
+	open override class var cellType: SizPropertyTableRow.CellType { .multiLine }
+	
 	private var defaultRowHeight: CGFloat!
 	
 	private var subTextView: UITextView!
@@ -853,6 +873,9 @@ open class SizCellForMultiLine: SizPropertyTableCell {
 
 //MARK: - Cell: Star Rating
 open class SizCellForRating: SizPropertyTableCell, FloatRatingViewDelegate {
+	
+	open override class var cellType: SizPropertyTableRow.CellType { .rating }
+	
 	private var ratingView: FloatRatingView!
 	public var ratingBar: FloatRatingView { return self.ratingView }
 	
@@ -896,6 +919,8 @@ open class SizCellForRating: SizPropertyTableCell, FloatRatingViewDelegate {
 //MARK: - Cell: Button
 open class SizCellForButton: SizPropertyTableCell {
 	
+	open override class var cellType: SizPropertyTableRow.CellType { .button }
+	
 	open override func onInit() {
 		super.onInit()
 		textLabel?.textAlignment = .left
@@ -907,6 +932,8 @@ open class SizCellForButton: SizPropertyTableCell {
 
 //MARK: - Cell: Sellect
 open class SizCellForSelect: SizCellForEditText, UIPickerViewDelegate, UIPickerViewDataSource {
+	
+	open override class var cellType: SizPropertyTableRow.CellType { .select }
 	
 	var selectionTitles: [String]! = nil
 	public let picker: UIPickerView = UIPickerView()

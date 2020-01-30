@@ -275,7 +275,7 @@ public extension UIAlertController {
 
 public class SizAlertBuilder {
 	private let alert: UIAlertController
-	private var actions = [UIAlertAction]()
+	private var actions: [UIAlertAction]
 	
 	public var title: String? {
 		get { return alert.title }
@@ -286,8 +286,14 @@ public class SizAlertBuilder {
 		set(text) { alert.message = text }
 	}
 	
-	public init(title: String? = nil, message: String? = nil, style: UIAlertController.Style = .alert) {
-		alert = UIAlertController(title: title, message: message, preferredStyle: style)
+	public init(
+		title: String? = nil,
+		message: String? = nil,
+		style: UIAlertController.Style = .alert,
+		actions: [UIAlertAction] = [])
+	{
+		self.alert = UIAlertController(title: title, message: message, preferredStyle: style)
+		self.actions = actions
 	}
 	
 	public func setTitle(_ title: String?) -> Self {
@@ -307,15 +313,15 @@ public class SizAlertBuilder {
 		-> Self
 	{
 		let action = UIAlertAction(title: title, style: style, handler: handler)
-		actions.append(action)
+		self.actions.append(action)
 		return self
 	}
 
 	public func create() -> UIAlertController {
-		for action in actions {
-			alert.addAction(action)
+		for action in self.actions {
+			self.alert.addAction(action)
 		}
-		return alert
+		return self.alert
 	}
 	
 	public func show(parent: UIViewController, animated: Bool = true, completion: (()->Void)? = nil) {
