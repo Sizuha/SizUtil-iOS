@@ -22,8 +22,8 @@ open class SizPropertyTableSection {
 		title: String? = nil,
 		onCreateHeader: (()->UIView)? = nil,
 		headerHeight: CGFloat = DEFAULT_HEIGHT,
-		rows: [SizPropertyTableRow] = []
-	) {
+		rows: [SizPropertyTableRow] = [])
+	{
 		self.title = title
 		self.rows = rows
 		self.onCreateHeader = onCreateHeader

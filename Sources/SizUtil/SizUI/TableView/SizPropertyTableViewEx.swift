@@ -6,6 +6,35 @@
 
 import UIKit
 
+// MARK: - Section
+
+public extension SizPropertyTableSection {
+	
+	enum Attribute {
+		case header(view: ()->UIView)
+		case headerHeight(_ height: CGFloat)
+	}
+	
+	convenience init(_ title: String? = nil, attrs: [Attribute] = [], rows: [SizPropertyTableRow] = []) {
+		self.init(title: title, onCreateHeader: nil, headerHeight: DEFAULT_HEIGHT, rows: rows)
+		applyAttrs(attrs)
+	}
+	
+	func applyAttrs(_ attrs: [Attribute]) {
+		for attr in attrs {
+			switch attr {
+			case .header(let view): self.onCreateHeader = view
+			case .headerHeight(let height): self.headerHeight = height
+				
+			@unknown default: continue
+			}
+		}
+	}
+	
+}
+
+// MARK: - Row
+
 public extension SizPropertyTableRow {
 	
 	enum Attribute {
