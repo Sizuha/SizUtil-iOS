@@ -15,7 +15,7 @@ public extension SizPropertyTableSection {
 		case headerHeight(_ height: CGFloat)
 	}
 	
-	convenience init(_ title: String? = nil, attrs: [Attribute] = [], rows: [SizPropertyTableRow] = []) {
+	convenience init(title: String? = nil, attrs: [Attribute] = [], rows: [SizPropertyTableRow] = []) {
 		self.init(title: title, onCreateHeader: nil, headerHeight: DEFAULT_HEIGHT, rows: rows)
 		applyAttrs(attrs)
 	}
