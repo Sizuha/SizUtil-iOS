@@ -38,6 +38,7 @@ public extension SizPropertyTableSection {
 public extension SizPropertyTableRow {
 	
 	enum Attribute {
+		case labelColor(_ color: UIColor)
 		case textColor(_ color: UIColor)
 		case tintColor(_ color: UIColor)
 		
@@ -58,6 +59,7 @@ public extension SizPropertyTableRow {
 	func applyAttrs(_ attrs: [Attribute]) {
 		for attr in attrs {
 			switch attr {
+			case .labelColor(let color): labelColor = color
 			case .textColor(let color): textColor = color
 			case .tintColor(let color): tintColor = color
 			case .height(let proc): height = proc

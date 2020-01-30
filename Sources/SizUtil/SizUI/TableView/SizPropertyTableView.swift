@@ -56,6 +56,7 @@ open class SizPropertyTableRow {
 	var label: String = ""
 	var dataSource: (()->Any?)? = nil
 	var hint: String = ""
+	var labelColor: UIColor? = nil
 	var textColor: UIColor? = nil
 	var tintColor: UIColor? = nil
 	var height: (()->CGFloat)? = nil
@@ -135,6 +136,10 @@ open class SizPropertyTableRow {
 	}
 	public func hint(_ text: String) -> Self {
 		self.hint = text
+		return self
+	}
+	public func labelColor(_ color: UIColor) -> Self {
+		self.labelColor = color
 		return self
 	}
 	public func textColor(_ color: UIColor) -> Self {
@@ -264,7 +269,7 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
 		let cellView = dequeueReusableCell(withIdentifier: cellItem.viewID)
 			?? UITableViewCell()
 		
-		cellView.textLabel?.textColor = cellItem.textColor ?? UIColor.defaultText
+		cellView.textLabel?.textColor = cellItem.labelColor ?? UIColor.defaultText
 		
 		switch cellItem.type {
 		case .select:
@@ -275,6 +280,9 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
 				if !cellItem.label.isEmpty {
 					cell.textLabel?.text = cellItem.label
 					cell.textField.textAlignment = .right
+					if let textColor = cellItem.textColor {
+						cell.textField.textColor = textColor
+					}
 				}
 				
 				let selIdx = cellItem.dataSource?() as? Int ?? -1
@@ -295,6 +303,9 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
 				if !cellItem.label.isEmpty {
 					cell.textLabel?.text = cellItem.label
 					cell.textField.textAlignment = .right
+					if let textColor = cellItem.textColor {
+						cell.textField.textColor = textColor
+					}
 				}
 			}
 			
@@ -307,6 +318,9 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
 				if !cellItem.label.isEmpty {
 					cell.textLabel?.text = cellItem.label
 					cell.textField.textAlignment = .right
+					if let textColor = cellItem.textColor {
+						cell.textField.textColor = textColor
+					}
 				}
 				
 				if let date = cellItem.dataSource?() as? Date {
@@ -321,7 +335,12 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
 		case .stepper:
 			if let cell = cellView as? SizCellForStepper {
 				cell.placeholder = cellItem.hint
+				
 				cell.textField.textAlignment = .right
+				if let textColor = cellItem.textColor {
+					cell.textField.textColor = textColor
+				}
+
 				cell.textLabel?.text = cellItem.label
 				cell.stepper.tintColor = cellItem.tintColor ?? self.tintColor
 				
@@ -368,6 +387,9 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
 				: .none
 			
 			cellView.textLabel?.text = cellItem.label
+			if let textColor = cellItem.textColor {
+				cellView.detailTextLabel?.textColor = textColor
+			}
 			cellView.detailTextLabel?.text = cellItem.dataSource?() as? String ?? ""
 		}
 		

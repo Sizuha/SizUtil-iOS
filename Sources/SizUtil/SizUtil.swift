@@ -8,6 +8,8 @@
 
 import Foundation
 
+// MARK: - Date, Time
+
 public extension Calendar {
 	static var standard: Calendar {
 		return Calendar(identifier: .gregorian)
@@ -126,6 +128,13 @@ public struct SizHourMinSec {
 		self.second_raw = s
 	}
 	
+	public init(seconds: Int) {
+		let secs = seconds >= 0 ? seconds : -seconds
+		let hour = secs/60/60
+		let minute = secs/60 - hour*60
+		self.init(hour: hour, minute: minute, second: secs % 60)
+	}
+	
 	public init?(from text: String) {
 		guard let rawVal = Int(text) else {
 			return nil
@@ -161,6 +170,8 @@ public struct SizHourMinSec {
 		return self.hour*100_00 + self.minute_raw*100 + self.second_raw
 	}
 }
+
+// MARK: - END
 
 public extension Int {
 	func times(do task: ()->Void) {
