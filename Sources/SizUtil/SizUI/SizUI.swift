@@ -296,14 +296,47 @@ public class SizAlertBuilder {
 		self.actions = actions
 	}
 	
+	public func set(title: String?) -> Self {
+		return setTitle(title)
+	}
+	
 	public func setTitle(_ title: String?) -> Self {
 		self.title = title
 		return self
 	}
 	
+	public func set(message: String?) -> Self {
+		return setMessage(message)
+	}
+	
 	public func setMessage(_ message: String?) -> Self {
 		self.message = message
 		return self
+	}
+	
+	public func setAttributed(message: NSAttributedString) -> Self {
+		self.alert.setValue(message, forKey: "attributedMessage")
+		return self
+	}
+	
+	public func set(
+		message: String,
+		textAlign: NSTextAlignment,
+		textColor: UIColor = UIColor.defaultText,
+		font: UIFont) -> Self
+	{
+		let paragraphStyle = NSMutableParagraphStyle()
+		paragraphStyle.alignment = textAlign
+		
+		let messageText = NSAttributedString(
+			string: "message",
+			attributes: [
+				NSAttributedString.Key.paragraphStyle: paragraphStyle,
+				NSAttributedString.Key.foregroundColor : textColor,
+				NSAttributedString.Key.font : font
+			]
+		)
+		return setAttributed(message: messageText)
 	}
 	
 	public func addAction(
