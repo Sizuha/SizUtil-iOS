@@ -329,7 +329,7 @@ public class SizAlertBuilder {
 		paragraphStyle.alignment = textAlign
 		
 		let messageText = NSAttributedString(
-			string: "message",
+			string: message,
 			attributes: [
 				NSAttributedString.Key.paragraphStyle: paragraphStyle,
 				NSAttributedString.Key.foregroundColor : textColor,
