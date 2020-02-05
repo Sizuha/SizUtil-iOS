@@ -251,27 +251,39 @@ public protocol SizViewUpdater {
 //MARK: - Alert Dialog
 
 public extension UIAlertController {
+		
+	/// ローディング表示と共にAlertポップアップを表示する.
+	///
+	/// 注意！ViewControllerのpresent()メソッドで表示されるので、基本的に非同期（Async）処理となっている
+	/// - Parameters:
+	///   - viewController: このViewControllerの上にポップアップが現れる
+	///   - message: メッセージ
+	///   - style: IndicatorのStyle。nilの場合、基本は「.gary」でDarkModeの場合は「.white」
+	///   - indicatorCenter: Indicatorの位置
+	///   - mainAsync: ポップアップを表示する時（present）、DispatchQueue.main.asyncを使う
+	///   - completion: 表示が完了した後の処理
 	class func showIndicatorAlert(
 		viewController: UIViewController,
 		message: String,
-		style: UIActivityIndicatorView.Style = .gray,
+		style: UIActivityIndicatorView.Style? = nil,
 		indicatorCenter: CGPoint = CGPoint(x: 25, y: 30),
-		async: Bool = true)
+		mainAsync: Bool = true,
+		completion: (()->Void)? = nil)
 		-> UIAlertController
 	{
 		let alert: UIAlertController = self.init(title: nil, message: message, preferredStyle: .alert)
 		
 		// Add Indicator
-		let indicator = UIActivityIndicatorView(style: style)
+		let indicator = UIActivityIndicatorView(style: style ?? (viewController.isDarkMode ? .white : .gray))
 		indicator.center = indicatorCenter
 		alert.view.addSubview(indicator)
 		
 		func show() {
 			indicator.startAnimating()
-			viewController.present(alert, animated: true, completion: nil)
+			viewController.present(alert, animated: true, completion: completion)
 		}
 		
-		if async {
+		if mainAsync {
 			DispatchQueue.main.async { show() }
 		}
 		else {
