@@ -254,19 +254,28 @@ public extension UIAlertController {
 	class func showIndicatorAlert(
 		viewController: UIViewController,
 		message: String,
-		style: UIActivityIndicatorView.Style = .gray)
+		style: UIActivityIndicatorView.Style = .gray,
+		indicatorCenter: CGPoint = CGPoint(x: 25, y: 30),
+		async: Bool = true)
 		-> UIAlertController
 	{
 		let alert: UIAlertController = self.init(title: nil, message: message, preferredStyle: .alert)
 		
 		// Add Indicator
 		let indicator = UIActivityIndicatorView(style: style)
-		indicator.center = CGPoint(x: 25, y: 30)
+		indicator.center = indicatorCenter
 		alert.view.addSubview(indicator)
 		
-		DispatchQueue.main.async {
+		func show() {
 			indicator.startAnimating()
 			viewController.present(alert, animated: true, completion: nil)
+		}
+		
+		if async {
+			DispatchQueue.main.async { show() }
+		}
+		else {
+			show()
 		}
 		
 		return alert
