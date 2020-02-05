@@ -268,7 +268,7 @@ public extension UIAlertController {
 		style: UIActivityIndicatorView.Style? = nil,
 		indicatorCenter: CGPoint = CGPoint(x: 25, y: 30),
 		mainAsync: Bool = true,
-		completion: (()->Void)? = nil)
+		completion: ((_ alert: UIAlertController)->Void)? = nil)
 		-> UIAlertController
 	{
 		let alert: UIAlertController = self.init(title: nil, message: message, preferredStyle: .alert)
@@ -280,7 +280,9 @@ public extension UIAlertController {
 		
 		func show() {
 			indicator.startAnimating()
-			viewController.present(alert, animated: true, completion: completion)
+			viewController.present(alert, animated: true) {
+				completion?(alert)
+			}
 		}
 		
 		if mainAsync {
