@@ -151,6 +151,7 @@ public extension UIView {
 	}
 	
 	func setMatchTo(parent: UIView) {
+		self.translatesAutoresizingMaskIntoConstraints = false
 		self.leftAnchor.constraint(equalTo: parent.leftAnchor).isActive = true
 		self.rightAnchor.constraint(equalTo: parent.rightAnchor).isActive = true
 		self.topAnchor.constraint(equalTo: parent.topAnchor).isActive = true
