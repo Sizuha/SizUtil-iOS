@@ -435,9 +435,12 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
 	}
 	override open func didSelect(rowAt: IndexPath) {
 		if let cellItem = self.source?[rowAt.section].rows[rowAt.row] {
+			/*// TODO call show selection picker
 			if cellItem.type == .select {
-				// TODO call show selection picker
-			}
+				if let cell = cellForRow(at: rowAt) as? SizCellForSelect {
+					
+				}
+			}*/
 			cellItem.onSelect?(rowAt)
 		}
 	}
@@ -968,7 +971,9 @@ open class SizCellForSelect: SizCellForEditText, UIPickerViewDelegate, UIPickerV
 		self.textField.inputView = self.picker
 	}
 	
-	public override func refreshViews() {}
+	public override func refreshViews() {
+		super.refreshViews()
+	}
 	
 	public func numberOfComponents(in pickerView: UIPickerView) -> Int {
 		return 1
