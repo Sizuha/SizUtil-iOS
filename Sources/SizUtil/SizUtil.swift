@@ -266,7 +266,7 @@ public func addSkipBackupAttributeToItemAtURL(filePath: String) {
 extension URL {
     
     public func setExcludedFromBackup() {
-        addSkipBackupAttributeToItemAtURL(filePath: self.absoluteString)
+        addSkipBackupAttributeToItemAtURL(filePath: self.path)
     }
     
 }
