@@ -77,3 +77,8 @@ if pattern ~= inputString /* String */ {
 	// パターンが一致!!
 }
 ```
+
+## iCloud Backupから除く
+```swift
+URL(fileURLWithPath: "...").setExcludedFromBackup()
+```
