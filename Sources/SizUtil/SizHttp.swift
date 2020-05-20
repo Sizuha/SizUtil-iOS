@@ -74,10 +74,10 @@ public class SizHttp {
     }
     
     public struct MultipartData {
-        var key: String
-        var filename: String
-        var mimeType: String
-        var data: Data
+        public var key: String
+        public var filename: String
+        public var mimeType: String
+        public var data: Data
     }
     
     public static func postMultipart(
