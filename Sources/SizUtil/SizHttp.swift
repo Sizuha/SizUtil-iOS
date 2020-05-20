@@ -73,11 +73,18 @@ public class SizHttp {
         try requestWithJson(method: .post, url: url, body: body, onComplete: onComplete)
     }
     
-    public struct MultipartData {
+    public class MultipartData {
         public var key: String
         public var filename: String
         public var mimeType: String
         public var data: Data
+        
+        public init(key: String, filename: String, mimeType: String, data: Data) {
+            self.key = key
+            self.filename = filename
+            self.mimeType = mimeType
+            self.data = data
+        }
     }
     
     public static func postMultipart(
