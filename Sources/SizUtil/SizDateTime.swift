@@ -208,6 +208,11 @@ public struct SizDateTime {
         self.time = time
     }
     
+    public init(from: Date) {
+        self.date = SizYearMonthDay(from: from)
+        self.time = SizHourMinSec(from: from)
+    }
+    
     public init(date: SizYearMonthDay, time: SizHourMinSec) {
         self.date = date
         self.time = time

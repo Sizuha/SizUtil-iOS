@@ -72,52 +72,71 @@ public class SizHttp {
     public static func postJson(url: URL, body: NSDictionary, onComplete: @escaping (Data?, URLResponse?, Error?) -> Void) throws {
         try requestWithJson(method: .post, url: url, body: body, onComplete: onComplete)
     }
-    
-    public class MultipartData {
-        public var key: String
-        public var filename: String
-        public var mimeType: String
-        public var data: Data
         
-        public init(key: String, filename: String, mimeType: String, data: Data) {
-            self.key = key
-            self.filename = filename
-            self.mimeType = mimeType
-            self.data = data
-        }
+    public static func makeMultipartParams(from: [String: String]) -> [String: Any] {
+        var result: [String: Any] = [:]
+        for (k, v) in from { result[k] = v }
+        return result
     }
     
     public static func postMultipart(
         url: URL,
-        params: [String: String],
-        data: MultipartData,
-        boundary: String? = nil,
+        params: [String: Any],
+        makeFileName: ((_ key: String)->String)? = nil,
         onComplete: @escaping (Data?, URLResponse?, Error?) -> Void
     ) {
         var request: URLRequest = URLRequest(url: url)
         request.httpMethod = HttpMethod.post.rawValue
+        
+        let uuid = UUID().uuidString
+        let boundary = "---------------------------\(uuid)"
+        let boundaryText = "--\(boundary)\r\n"
 
-        let boundaryStr = boundary ?? "WebKitBoundary-\(UUID().uuidString)"
-        request.setValue("multipart/form-data; boundary=\(boundaryStr)", forHTTPHeaderField: "Content-Type")
+        request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        
+        var body = Data()
+        for param in params {
+            switch param.value {
+            case let image as UIImage:
+                let imageData = image.jpegData(compressionQuality: 1.0)
+                let filename = makeFileName?(param.key) ?? "\(uuid).jpg"
 
-        let body = NSMutableData()
-        for (key, value) in params {
-            body.append(string: "--\(boundaryStr)")
-            body.append(string: "Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n")
-            body.append(string: value)
-            body.append(string: "\r\n")
+                body.append(boundaryText.data(using: .utf8)!)
+                body.append("Content-Disposition: form-data; name=\"\(param.key)\"; filename=\"\(filename)\"\r\n".data(using: .utf8)!)
+                body.append("Content-Type: \(SizHttp.MIME_IMAGE_JPEG)\r\n\r\n".data(using: .utf8)!)
+
+                body.append(imageData!)
+                body.append("\r\n".data(using: .utf8)!)
+                break
+            
+            case let string as String:
+                body.append(boundaryText.data(using: .utf8)!)
+                body.append("Content-Disposition: form-data; name=\"\(param.key)\"\r\n\r\n".data(using: .utf8)!)
+                body.append(string.data(using: .utf8)!)
+                body.append("\r\n".data(using: .utf8)!)
+                
+            case let data as Data:
+                body.append(boundaryText.data(using: .utf8)!)
+                body.append("Content-Disposition: form-data; name=\"\(param.key)\"\r\n\r\n".data(using: .utf8)!)
+                body.append(data)
+                body.append("\r\n".data(using: .utf8)!)
+
+            case let value as Any:
+                body.append(boundaryText.data(using: .utf8)!)
+                body.append("Content-Disposition: form-data; name=\"\(param.key)\"\r\n\r\n".data(using: .utf8)!)
+                body.append(String(describing: value).data(using: .utf8)!)
+                body.append("\r\n".data(using: .utf8)!)
+
+            default: break
+            }
         }
+        body.append("--\(boundary)--\r\n".data(using: .utf8)!)
         
-        body.append(string: "--\(boundaryStr)")
-        body.append(string: "Content-Disposition: form-data; name=\"\(data.key)\"; filename=\"\(data.filename)\"\r\n")
-        body.append(string: "Content-Type: \(data.mimeType)\r\n\r\n")
-        body.append(data.data)
-        body.append(string: "\r\n")
-        body.append(string: "--\(boundaryStr)--")
+        print("http body: \(body.debugDescription)")
         
-        session.uploadTask(with: request, from: body as Data, completionHandler: onComplete).resume()
+        request.httpBody = body as Data
+        session.dataTask(with: request, completionHandler: onComplete).resume()
     }
-    
     
     public static func request(method: HttpMethod, url: URL, params: [String:String?], onComplete: @escaping (Data?, URLResponse?, Error?) -> Void) {
         if method == .get {
