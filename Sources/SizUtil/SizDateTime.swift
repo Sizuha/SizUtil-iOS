@@ -196,7 +196,7 @@ public struct SizDateTime {
     public var date: SizYearMonthDay
     public var time: SizHourMinSec
     
-    public init?(from: Int?) {
+    public init?(from: Int64?) {
         guard let raw = from else { return nil }
         
         let dateVal = raw / 100_00_00
@@ -226,7 +226,7 @@ public struct SizDateTime {
         )
     }
 
-    public func toInt() -> Int {
+    public func toInt64() -> Int64 {
         date.toInt()*100_00_00 + time.toInt()
     }
 }
