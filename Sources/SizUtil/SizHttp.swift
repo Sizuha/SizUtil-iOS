@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 public class SizHttp {
     public static let MIME_IMAGE_JPEG = "image/jpg"
