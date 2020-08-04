@@ -89,7 +89,7 @@ public func getAppBuildVer() -> String {
 }
 
 /// Excluding a File from Backups on iOS 5.1 and later (Swift)
-public func addSkipBackupAttributeToItemAtURL(filePath: String) {
+public func addExcludedFromBackup(filePath: String) {
     let url = NSURL.fileURL(withPath: filePath) as NSURL
     do {
         try url.setResourceValue(true, forKey: URLResourceKey.isExcludedFromBackupKey)
@@ -102,7 +102,7 @@ public func addSkipBackupAttributeToItemAtURL(filePath: String) {
 extension URL {
     
     public func setExcludedFromBackup() {
-        addSkipBackupAttributeToItemAtURL(filePath: self.path)
+        addExcludedFromBackup(filePath: self.path)
     }
     
 }

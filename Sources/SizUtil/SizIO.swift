@@ -488,3 +488,23 @@ public func createByteBuffer(bytes: Int) -> UnsafeMutablePointer<UInt8> {
 	buffer.initialize(repeating: 0, count: bytes)
 	return buffer
 }
+
+public func loadTextFromBundle(name: String, ext: String = "txt") -> String? {
+    Bundle.main.loadText(name: name, ext: ext)
+}
+
+public extension Bundle {
+    
+    func loadText(name: String, ext: String = "txt") -> String? {
+        guard let filepath = self.path(forResource: name, ofType: ext) else { return nil }
+        
+        do {
+            let contents = try String(contentsOfFile: filepath)
+            return contents
+        }
+        catch {
+            return nil
+        }
+    }
+    
+}
