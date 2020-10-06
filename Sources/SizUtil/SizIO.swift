@@ -454,6 +454,25 @@ public extension URL {
 	}
 }
 
+public extension FileManager {
+    func merge(files: [URL], appendTo destination: URL, chunkSize: Int = 1000000) throws {
+        let writer = try FileHandle(forUpdating: destination)
+        writer.seekToEndOfFile()
+        defer { writer.closeFile() }
+        
+        for partLocation in files{
+            guard let reader = try? FileHandle(forReadingFrom: partLocation) else { continue }
+            defer { reader.closeFile() }
+            
+            var data = reader.readData(ofLength: chunkSize)
+            while data.count > 0 {
+                writer.write(data)
+                data = reader.readData(ofLength: chunkSize)
+            }
+        }
+    }
+}
+
 //MARK: - Utils
 
 public func getFileSize(url: URL) -> Int {
