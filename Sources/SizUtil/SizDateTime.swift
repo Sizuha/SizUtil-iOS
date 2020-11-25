@@ -56,6 +56,11 @@ public struct SizYearMonthDay: Equatable {
         self.init(y, m, d)
     }
     
+    public init?(from yyyyMMdd: String) {
+        guard yyyyMMdd.count == 8, let dateVal = Int(yyyyMMdd) else { return nil }
+        self.init(from: dateVal)
+    }
+    
     public static var now: SizYearMonthDay {
         return SizYearMonthDay(from: Date())
     }

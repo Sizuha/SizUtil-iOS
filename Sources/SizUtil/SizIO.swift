@@ -455,6 +455,13 @@ public extension URL {
 }
 
 public extension FileManager {
+    
+    /// 複数のフィイルを一つのファイルにまとめる
+    /// - Parameters:
+    ///   - files: 対象ファイル（達）
+    ///   - destination:「files」の中身は、こちらのファイル（destination）に追加される
+    ///   - chunkSize: Buffer Size
+    /// - Throws: destinationフィイルを開くときに失敗する場合など
     func merge(files: [URL], appendTo destination: URL, chunkSize: Int = 1000000) throws {
         let writer = try FileHandle(forUpdating: destination)
         writer.seekToEndOfFile()

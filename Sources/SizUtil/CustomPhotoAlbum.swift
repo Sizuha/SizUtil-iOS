@@ -109,7 +109,7 @@ class CustomPhotoAlbum: NSObject {
      アルバムからの写真を削除する場合は、必ずユーザー側の確認を得るポップアップが表示される
      */
     
-    func remove(assets: [PHAsset], fromLibrary: Bool = true, completionHandler: ((Bool, Error?) -> Void)? = nil) {
+    func remove(assets: [PHAsset], fromLibrary: Bool = false, completionHandler: ((Bool, Error?) -> Void)? = nil) {
 		self.checkAuthorizationWithHandler { success in
 			guard
 				success,
@@ -118,18 +118,17 @@ class CustomPhotoAlbum: NSObject {
 			
             PHPhotoLibrary.shared().performChanges({
                 if fromLibrary {
-                    PHAssetChangeRequest.deleteAssets(assets as NSArray)
+                    if let request = PHAssetCollectionChangeRequest(for: album) {
+                        request.removeAssets(assets as NSArray)
+                    }
                     return
                 }
-                
-				if let request = PHAssetCollectionChangeRequest(for: album) {
-					request.removeAssets(assets as NSArray)
-				}
+                PHAssetChangeRequest.deleteAssets(assets as NSArray)
 			}, completionHandler: completionHandler)
         }
 	}
 	
-	func remove(before date: Date, fromLibrary: Bool = true, completionHandler: ((Bool, Error?) -> Void)? = nil) {
+	func remove(before date: Date, fromLibrary: Bool = false, completionHandler: ((Bool, Error?) -> Void)? = nil) {
 		let targets = list().filter { asset in
 			guard let cr_date = asset.creationDate else { return false }
 			return cr_date <= date
@@ -137,7 +136,7 @@ class CustomPhotoAlbum: NSObject {
         remove(assets: targets, fromLibrary: fromLibrary, completionHandler: completionHandler)
 	}
     
-    func removeBy(filename: String, fromLibrary: Bool = true, completionHandler: ((Bool, Error?) -> Void)? = nil) {
+    func removeBy(filename: String, fromLibrary: Bool = false, completionHandler: ((Bool, Error?) -> Void)? = nil) {
         let targets = list().filter { asset in
             let imgName = Self.getFilename(from: asset)
             return filename == imgName
