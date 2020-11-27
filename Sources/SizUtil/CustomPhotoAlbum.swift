@@ -71,7 +71,10 @@ class CustomPhotoAlbum: NSObject {
 	
     func add(url: URL, isPhoto: Bool = true, completionHandler: ((Bool, Error?) -> Void)? = nil) {
 		self.checkAuthorizationWithHandler { success in
-			guard success, self.assetCollection != nil else { return }
+			guard success, self.assetCollection != nil else {
+                completionHandler?(false, nil)
+                return
+            }
 			
 			PHPhotoLibrary.shared().performChanges({
                 guard let assetChangeRequest = isPhoto
@@ -90,7 +93,10 @@ class CustomPhotoAlbum: NSObject {
 
     func save(image: UIImage, completionHandler: ((Bool, Error?) -> Void)? = nil) {
         self.checkAuthorizationWithHandler { success in
-			guard success, self.assetCollection != nil else { return }
+			guard success, self.assetCollection != nil else {
+                completionHandler?(false, nil)
+                return
+            }
 			
             PHPhotoLibrary.shared().performChanges({
 				let assetChangeRequest = PHAssetChangeRequest.creationRequestForAsset(from: image)
@@ -114,7 +120,10 @@ class CustomPhotoAlbum: NSObject {
 			guard
 				success,
 				let album = self.assetCollection
-			else { return }
+			else {
+                completionHandler?(false, nil)
+                return
+            }
 			
             PHPhotoLibrary.shared().performChanges({
                 if fromLibrary {
@@ -130,7 +139,10 @@ class CustomPhotoAlbum: NSObject {
 	
 	func remove(before date: Date, fromLibrary: Bool = false, completionHandler: ((Bool, Error?) -> Void)? = nil) {
 		let targets = list().filter { asset in
-			guard let cr_date = asset.creationDate else { return false }
+			guard let cr_date = asset.creationDate else {
+                completionHandler?(false, nil)
+                return false
+            }
 			return cr_date <= date
 		}
         remove(assets: targets, fromLibrary: fromLibrary, completionHandler: completionHandler)
