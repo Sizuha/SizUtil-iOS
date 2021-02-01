@@ -478,35 +478,43 @@ public extension FileManager {
             }
         }
     }
+    
+    func filesize(url: URL) -> Int {
+        (try? attributesOfItem(atPath: url.path)[.size]) as? Int ?? 0
+    }
+    
+    func scanDirs(url: URL) -> [URL] {
+        var result = [URL]()
+        
+        if let urls = try? self.contentsOfDirectory(
+            at: url,
+            includingPropertiesForKeys: [.isDirectoryKey],
+            options: [.skipsHiddenFiles])
+        {
+            for url in urls {
+                if url.pathExtension.isEmpty {
+                    result.append(url)
+                }
+            }
+        }
+        
+        result.sort {
+            $0.absoluteString > $1.absoluteString
+        }
+        
+        return result
+    }
+    
 }
 
 //MARK: - Utils
 
 public func getFileSize(url: URL) -> Int {
-	return (try? FileManager.default.attributesOfItem(atPath: url.path)[.size]) as? Int ?? 0
+    FileManager.default.filesize(url: url)
 }
 
 public func scanDirs(url: URL) -> [URL] {
-	var result = [URL]()
-	let fileManager = FileManager.default
-	
-	if let urls = try? fileManager.contentsOfDirectory(
-		at: url,
-		includingPropertiesForKeys: [.isDirectoryKey],
-		options: [.skipsHiddenFiles])
-	{
-		for url in urls {
-			if url.pathExtension.isEmpty {
-				result.append(url)
-			}
-		}
-	}
-	
-	result.sort {
-		$0.absoluteString > $1.absoluteString
-	}
-	
-	return result
+    FileManager.default.scanDirs(url: url)
 }
 
 public func createByteBuffer(bytes: Int) -> UnsafeMutablePointer<UInt8> {

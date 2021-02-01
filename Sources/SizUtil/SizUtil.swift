@@ -36,10 +36,45 @@ public func addExcludedFromBackup(filePath: String) {
     }
 }
 
-extension URL {
-    
-    public func setExcludedFromBackup() {
+// MARK: - URL
+
+public extension URL {
+    /// Excluding a File from Backups on iOS 5.1 and later (Swift)
+    func setExcludedFromBackup() {
         addExcludedFromBackup(filePath: self.path)
     }
+    
+    /// URLエンコード
+    static func urlEncode(string: String) -> String {
+        return string.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)!
+    }
+}
+
+// MARK: - Thread
+
+extension Thread {
+    
+    public static func runOnMainThread(_ proc: (()->Void)?) {
+        guard let proc = proc else { return }
+        
+        if Thread.isMainThread {
+            proc()
+            return
+        }
+        
+        DispatchQueue.main.async {
+            proc()
+        }
+    }
+    
+}
+
+
+// MARK: - SizApplication
+
+open class SizApplication {
+    
+    static var shortVersion: String { getAppShortVer() }
+    static var buildVersion: String { getAppBuildVer() }
     
 }
