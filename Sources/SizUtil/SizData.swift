@@ -170,8 +170,8 @@ public extension String {
         return NSRange(location: 0, length: self.count)
     }
     
-    func asPattern() -> NSRegularExpression? {
-        return try? NSRegularExpression(pattern: self, options: [])
+    var asPattern: NSRegularExpression? {
+        try? NSRegularExpression(pattern: self, options: [])
     }
     
     static prefix func ?= (pattern: String) -> NSRegularExpression? {
@@ -189,6 +189,10 @@ public extension String {
     }
     func isNotMatch(_ regex: NSRegularExpression?) -> Bool {
         return !isMatch(regex)
+    }
+    
+    var deletingPathExtension: String {
+        NSString(string: self).deletingPathExtension
     }
 }
 

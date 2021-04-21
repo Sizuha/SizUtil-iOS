@@ -24,12 +24,12 @@ class CustomPhotoAlbum: NSObject {
         }
     }
 
-    private func checkAuthorizationWithHandler(completion: @escaping ((_ success: Bool) -> Void)) {
+    func checkAuthorization(completion: @escaping ((_ success: Bool) -> Void)) {
 		let authStatus = PHPhotoLibrary.authorizationStatus()
 		switch authStatus {
 		case .notDetermined:
             PHPhotoLibrary.requestAuthorization { status in
-                self.checkAuthorizationWithHandler(completion: completion)
+                self.checkAuthorization(completion: completion)
             }
 			
 		case .authorized:
@@ -70,7 +70,7 @@ class CustomPhotoAlbum: NSObject {
     }
 	
     func add(url: URL, isPhoto: Bool = true, completionHandler: ((Bool, Error?) -> Void)? = nil) {
-		self.checkAuthorizationWithHandler { success in
+		self.checkAuthorization { success in
 			guard success, self.assetCollection != nil else {
                 completionHandler?(false, nil)
                 return
@@ -91,8 +91,34 @@ class CustomPhotoAlbum: NSObject {
 		}
 	}
 
+    func add(urls: [URL], isPhoto: Bool = true, completionHandler: ((Bool, Error?) -> Void)? = nil) {
+        self.checkAuthorization { success in
+            guard success, self.assetCollection != nil else {
+                completionHandler?(false, nil)
+                return
+            }
+            
+            PHPhotoLibrary.shared().performChanges({
+                var assets = [PHObjectPlaceholder]()
+                for url in urls {
+                    guard
+                        let assetChangeRequest = isPhoto
+                            ? PHAssetChangeRequest.creationRequestForAssetFromImage(atFileURL: url)
+                            : PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: url),
+                        let assetPlaceHolder = assetChangeRequest.placeholderForCreatedAsset
+                    else { continue }
+                    assets.append(assetPlaceHolder)
+                }
+                
+                let albumChangeRequest = PHAssetCollectionChangeRequest(for: self.assetCollection)
+                let enumeration = NSArray(array: assets)
+                albumChangeRequest!.addAssets(enumeration)
+            }, completionHandler: completionHandler)
+        }
+    }
+    
     func save(image: UIImage, completionHandler: ((Bool, Error?) -> Void)? = nil) {
-        self.checkAuthorizationWithHandler { success in
+        self.checkAuthorization { success in
 			guard success, self.assetCollection != nil else {
                 completionHandler?(false, nil)
                 return
@@ -116,7 +142,7 @@ class CustomPhotoAlbum: NSObject {
      */
     
     func remove(assets: [PHAsset], fromLibrary: Bool = false, completionHandler: ((Bool, Error?) -> Void)? = nil) {
-		self.checkAuthorizationWithHandler { success in
+		self.checkAuthorization { success in
 			guard
 				success,
 				let album = self.assetCollection

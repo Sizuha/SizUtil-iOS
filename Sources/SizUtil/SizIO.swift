@@ -279,7 +279,16 @@ open class SizCsvParser {
 	public required init(skipLines: Int = 0) {
 		self.skipLines = skipLines
 	}
-	
+    
+    /// CSV形式のデータから、行(row)と列(column)を読み取る
+    ///
+    /// - Parameters:
+    ///   - from: CSVファイルのURL
+    ///   - onReadColumn: 各行(row)の各列(column)を読み取った時の処理内容
+    open func parse(from: URL, onReadColumn: (_ column: ColumnData) -> Void) {
+        parse(from: InputStream(url: from)!, onReadColumn: onReadColumn)
+    }
+
 	/// CSV形式のデータから、行(row)と列(column)を読み取る
 	///
 	/// - Parameters:
@@ -507,6 +516,22 @@ public extension FileManager {
     
 }
 
+public extension Bundle {
+    
+    func loadText(name: String, ext: String = "txt") -> String? {
+        guard let filepath = self.path(forResource: name, ofType: ext) else { return nil }
+        
+        do {
+            let contents = try String(contentsOfFile: filepath)
+            return contents
+        }
+        catch {
+            return nil
+        }
+    }
+    
+}
+
 //MARK: - Utils
 
 public func getFileSize(url: URL) -> Int {
@@ -527,18 +552,23 @@ public func loadTextFromBundle(name: String, ext: String = "txt") -> String? {
     Bundle.main.loadText(name: name, ext: ext)
 }
 
-public extension Bundle {
-    
-    func loadText(name: String, ext: String = "txt") -> String? {
-        guard let filepath = self.path(forResource: name, ofType: ext) else { return nil }
-        
-        do {
-            let contents = try String(contentsOfFile: filepath)
-            return contents
-        }
-        catch {
-            return nil
-        }
+public func copyFileFromBundle(nameForFile: String, extForFile: String, exportTo: URL? = nil) -> Bool {
+    let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+    let destURL: URL = exportTo ?? documentsURL.appendingPathComponent(nameForFile).appendingPathExtension(extForFile)
+    guard
+        let sourceURL = Bundle.main.url(forResource: nameForFile, withExtension: extForFile)
+    else {
+        print("Source File not found.")
+        return false
     }
     
+    do {
+        try FileManager.default.copyItem(at: sourceURL, to: destURL)
+    }
+    catch {
+        print("Unable to copy file")
+        return false
+    }
+    
+    return true
 }
