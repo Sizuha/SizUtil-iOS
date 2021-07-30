@@ -41,108 +41,122 @@ public func copyAsArray(from: UnsafeMutablePointer<UInt8>, count: Int) -> [UInt8
 }
 
 open class SizByteReader {
-	public static let IOError = NSError(domain: "IO Error", code: -1, userInfo: nil)
-	
-	public var isOpened = false
-	public var input: InputStream
-	
-	fileprivate var buffer8B: UnsafeMutablePointer<UInt8>!
-	
-	public required init(from: InputStream) {
-		self.input = from
-	}
-	
-	public convenience init?(url: URL) {
-		guard let input = InputStream(url: url) else { return nil }
-		self.init(from: input)
-	}
+    public static let IOError = NSError(domain: "IO Error", code: -1, userInfo: nil)
+    
+    public var isOpened = false
+    public var input: InputStream
+    
+    fileprivate var buffer8B: UnsafeMutablePointer<UInt8>!
+    
+    public required init(from: InputStream) {
+        self.input = from
+    }
+    
+    public convenience init?(url: URL) {
+        guard let input = InputStream(url: url) else { return nil }
+        self.init(from: input)
+    }
 
-	open func open() {
-		self.input.open()
-		
-		if self.buffer8B == nil {
-			self.buffer8B = createByteBuffer(bytes: 8)
-		}
-		self.isOpened = true
-	}
-	
-	open func close() {
-		input.close()
-		
-		self.buffer8B?.deallocate()
-		self.buffer8B = nil
-		
-		self.isOpened = false
-	}
-	
-	public func readByte() throws -> UInt8 {
-		guard
-			self.hasNext,
-			self.input.read(self.buffer8B, maxLength: 1) == 1
-		else { throw SizByteReader.IOError }
-		
-		if let resut = UnsafeMutableRawPointer(self.buffer8B)?.load(as: UInt8.self) {
-			return resut
-		}
-		else { throw SizByteReader.IOError }
-	}
-	
-	public func read<T: FixedWidthInteger>() throws -> T {
-		return try read(as: T.self)
-	}
-	
-	public func read<T: FixedWidthInteger>(as: T.Type) throws -> T {
-		let bytes = T.bitWidth / 8
-		guard
-			self.hasNext,
-			self.input.read(self.buffer8B, maxLength: bytes) == bytes
-		else { throw SizByteReader.IOError }
-		
-		if let result = UnsafeMutableRawPointer(self.buffer8B)?.load(as: T.self) {
-			return result
-		}
-		else {
-			throw SizByteReader.IOError
-		}
-	}
+    open func open() {
+        self.input.open()
+        
+        if self.buffer8B == nil {
+            self.buffer8B = createByteBuffer(bytes: 8)
+        }
+        self.isOpened = true
+    }
+    
+    open func close() {
+        input.close()
+        
+        self.buffer8B?.deallocate()
+        self.buffer8B = nil
+        
+        self.isOpened = false
+    }
+    
+    public func readByte() throws -> UInt8 {
+        guard
+            self.hasNext,
+            self.input.read(self.buffer8B, maxLength: 1) == 1
+        else { throw SizByteReader.IOError }
+        
+        if let resut = UnsafeMutableRawPointer(self.buffer8B)?.load(as: UInt8.self) {
+            return resut
+        }
+        else { throw SizByteReader.IOError }
+    }
+    
+    public func read<T: FixedWidthInteger>() throws -> T {
+        return try read(as: T.self)
+    }
+    
+    public func read<T: FixedWidthInteger>(as: T.Type) throws -> T {
+        let bytes = T.bitWidth / 8
+        guard
+            self.hasNext,
+            self.input.read(self.buffer8B, maxLength: bytes) == bytes
+        else { throw SizByteReader.IOError }
+        
+        if let result = UnsafeMutableRawPointer(self.buffer8B)?.load(as: T.self) {
+            return result
+        }
+        else {
+            throw SizByteReader.IOError
+        }
+    }
 
-	public var hasNext: Bool {
-		return self.input.hasBytesAvailable
-	}
-	
-	public func skip(bytes: Int) throws -> Int {
-		guard
-			bytes > 0,
-			self.hasNext
-		else { return 0 }
-		
-		let tempBuffeer = createByteBuffer(bytes: bytes)
-		defer { tempBuffeer.deallocate() }
-		
-		let readBytes = self.input.read(self.buffer8B, maxLength: bytes)
-		if readBytes > 0 {
-			return readBytes
-		}
-		else {
-			throw SizByteReader.IOError
-		}
-	}
-	
-	public func read(bytes: Int) throws -> [UInt8] {
-		guard self.hasNext else { throw SizByteReader.IOError }
-		
-		let tempBuffeer = createByteBuffer(bytes: bytes)
-		defer { tempBuffeer.deallocate() }
-		guard self.input.read(self.buffer8B, maxLength: bytes) == bytes
-		else { throw SizByteReader.IOError }
-		
-		if let result = UnsafeMutableRawPointer(tempBuffeer)?.load(as: [UInt8].self) {
-			return result
-		}
-		else {
-			throw SizByteReader.IOError
-		}
-	}
+    public var hasNext: Bool {
+        return self.input.hasBytesAvailable
+    }
+    
+    public func skip(bytes: Int) throws -> Int {
+        guard
+            bytes > 0,
+            self.hasNext
+        else { return 0 }
+        
+        let tempBuffeer = createByteBuffer(bytes: bytes)
+        defer { tempBuffeer.deallocate() }
+        
+        let readBytes = self.input.read(self.buffer8B, maxLength: bytes)
+        if readBytes > 0 {
+            return readBytes
+        }
+        else {
+            throw SizByteReader.IOError
+        }
+    }
+    
+    public func readRaw(bytes: Int) throws -> (UnsafeMutablePointer<UInt8>, Int) {
+        guard self.hasNext else { throw SizByteReader.IOError }
+        
+        let tempBuffer = createByteBuffer(bytes: bytes)
+        defer { tempBuffer.deallocate() }
+        
+        let readBytes = self.input.read(self.buffer8B, maxLength: bytes)
+        guard readBytes > 0 else { throw SizByteReader.IOError }
+        
+        return (tempBuffer, readBytes)
+    }
+    
+    public func read(bytes: Int) throws -> [UInt8] {
+        let (tempBuffer, bytes) = try readRaw(bytes: bytes)
+        
+        if bytes == 0 { return [] }
+        if let result = UnsafeMutableRawPointer(tempBuffer)?.load(as: [UInt8].self) {
+            return result
+        }
+        else {
+            throw SizByteReader.IOError
+        }
+    }
+    
+    public func readAsData(bytes: Int) throws -> Data? {
+        let (tempBuffer, bytes) = try readRaw(bytes: bytes)
+        guard bytes > 0 else { return nil }
+        return Data(bytes: tempBuffer, count: bytes)
+    }
 }
 
 public class SizLineReader {
@@ -186,7 +200,7 @@ public class SizLineReader {
 		return 0
 	}
 	
-	public func lines(forEach: (_ line: String)->Void) {
+    public func lines(encoding: String.Encoding = .utf8, forEach: (_ line: String)->Void) {
 		let autoOpenAndClose = !self.isOpened
 		if autoOpenAndClose {
 			open()
@@ -209,7 +223,7 @@ public class SizLineReader {
 				switch byte {
 				case 0x0D: continue // CR
 				case 0x0A: // LF
-					let line = String(bytes: lineBuffer, encoding: .utf8)!
+					let line = String(bytes: lineBuffer, encoding: encoding)!
 					forEach(line)
 					lineBuffer.removeAll()
 				default:
@@ -219,10 +233,16 @@ public class SizLineReader {
 		}
 		
 		if !lineBuffer.isEmpty {
-			let line = String(bytes: lineBuffer, encoding: .utf8)!
+			let line = String(bytes: lineBuffer, encoding: encoding)!
 			forEach(line)
 		}
 	}
+    
+    public var lines: [String] {
+        var result = [String]()
+        lines { result.append($0) }
+        return result
+    }
 }
 
 //MARK: - CSV 関連
@@ -492,6 +512,7 @@ public extension FileManager {
         (try? attributesOfItem(atPath: url.path)[.size]) as? Int ?? 0
     }
     
+    // TODO 正確には、ファイル名ではなく、属性で確認する必要がある
     func scanDirs(url: URL) -> [URL] {
         var result = [URL]()
         
@@ -502,6 +523,29 @@ public extension FileManager {
         {
             for url in urls {
                 if url.pathExtension.isEmpty {
+                    result.append(url)
+                }
+            }
+        }
+        
+        result.sort {
+            $0.absoluteString > $1.absoluteString
+        }
+        
+        return result
+    }
+    
+    // TODO 正確には、ファイル名ではなく、属性で確認する必要がある
+    func scanFiles(url: URL) -> [URL] {
+        var result = [URL]()
+        
+        if let urls = try? self.contentsOfDirectory(
+            at: url,
+            includingPropertiesForKeys: nil,
+            options: [.skipsHiddenFiles])
+        {
+            for url in urls {
+                if url.pathExtension.isEmpty == false {
                     result.append(url)
                 }
             }
