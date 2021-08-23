@@ -247,12 +247,12 @@ public class SizLineReader {
 
 //MARK: - CSV 関連
 
-public func toCsvCellText(_ str: String, withoutComma: Bool = false) -> String {
+public func toCsvCellText(_ str: String, quote: Bool = false, withoutComma: Bool = false) -> String {
 	let cellData: String
 	if str.isEmpty {
 		cellData = ""
 	}
-	else if containsNeedEscapeChars(csvCellText: str) {
+	else if quote || containsNeedEscapeChars(csvCellText: str) {
 		let content = str.replacingOccurrences(of:"\"", with:"\"\"")
 		cellData = "\"\(content)\""
 	}
@@ -405,7 +405,7 @@ public class CsvSerializer {
 		return true
 	}
 	
-	public func push(row: CsvSerializable) {
+    public func push(row: CsvSerializable, quote: Bool = false) {
 		guard let _ = fileHandle else { return }
 		
 		var line = ""
@@ -415,7 +415,7 @@ public class CsvSerializer {
 			if isFirst { isFirst = false }
 			else { line.append(",") }
 			if !cell.isEmpty {
-				line.append(toCsvCellText(cell, withoutComma: true))
+				line.append(toCsvCellText(cell, quote: quote, withoutComma: true))
 			}
 		}
 		line.append("\n")
