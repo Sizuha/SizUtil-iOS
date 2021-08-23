@@ -22,6 +22,7 @@ public class SizHttp {
         case delete = "DELETE"
     }
     
+    /// Encoding for URL Query String.
     public static func urlQueryEncode(_ source: String) -> String {
         var allowedCharacterSet = CharacterSet.alphanumerics
         allowedCharacterSet.insert(charactersIn: "-._~")
@@ -29,6 +30,9 @@ public class SizHttp {
         return encoded
     }
     
+    /// HTMLのForm Data形式に変換
+    /// - Parameter params: データ
+    /// - Returns: 変換後の文字列
     public static func makeFormParamStr(_ params: [String:String?]) -> String {
         var result = ""
         var isFirst = true
@@ -47,12 +51,21 @@ public class SizHttp {
         return result
     }
     
+    /// パラメーター（Query String）なしで「HTTP GET」
+    /// - Parameters:
+    ///   - url: URL
+    ///   - onComplete: 処理後
     public static func get(url: URL, onComplete: @escaping (Data?, URLResponse?, Error?) -> Void) {
         var request: URLRequest = URLRequest(url: url)
         request.httpMethod = HttpMethod.get.rawValue
         session.dataTask(with: request, completionHandler: onComplete).resume()
     }
     
+    /// パラメーター（Query String）を入れて「HTTP GET」
+    /// - Parameters:
+    ///   - url: URL
+    ///   - params: パラメーター（Form Data）
+    ///   - onComplete: 処理後
     public static func get(url: URL, params: [String:String?], onComplete: @escaping (Data?, URLResponse?, Error?) -> Void) {
         var comp = URLComponents(url: url, resolvingAgainstBaseURL: false)!
         var items = [URLQueryItem]()
@@ -66,14 +79,27 @@ public class SizHttp {
         session.dataTask(with: request, completionHandler: onComplete).resume()
     }
     
+    /// HTTP POST
+    /// - Parameters:
+    ///   - url: URL
+    ///   - params: パラメーター（Form Data）
+    ///   - onComplete: 処理後
     public static func post(url: URL, params: [String:String?], onComplete: @escaping (Data?, URLResponse?, Error?) -> Void) {
         request(method: .post, url: url, params: params, onComplete: onComplete)
     }
     
+    /// HTTP POST
+    /// - Parameters:
+    ///   - url: URL
+    ///   - params: パラメーター（JSON）
+    ///   - onComplete: 処理後
     public static func postJson(url: URL, body: NSDictionary, onComplete: @escaping (Data?, URLResponse?, Error?) -> Void) throws {
         try requestWithJson(method: .post, url: url, body: body, onComplete: onComplete)
     }
-        
+    
+    /// 「Form Data」を「Multi-part Form Data」化する
+    /// - Parameter from: パラメーター（Form Data）
+    /// - Returns: Multi-part Form Data
     public static func makeMultipartParams(from: [String: String]) -> [String: Any] {
         var result: [String: Any] = [:]
         for (k, v) in from { result[k] = v }

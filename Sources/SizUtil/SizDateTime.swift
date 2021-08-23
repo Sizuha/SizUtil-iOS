@@ -8,12 +8,14 @@
 import Foundation
 
 public extension Calendar {
+    /// Gregorianカレンダー
     static var standard: Calendar {
         return Calendar(identifier: .gregorian)
     }
 }
 
 public extension Locale {
+    ///　en_US_POSIX
     static let standard = Locale(identifier: "en_US_POSIX")
 }
 
@@ -23,6 +25,7 @@ public extension TimeZone {
 
 fileprivate let stdCalendar = Calendar.standard
 
+/// 「年・月・日」を扱う
 public struct SizYearMonthDay: Equatable {
     public let year: Int
     public let month: Int
@@ -46,6 +49,8 @@ public struct SizYearMonthDay: Equatable {
         day = comp.day ?? 1
     }
     
+    /// 数字から「年・月・日」を得る
+    /// - Parameter from: yyyyMMdd (y=年、M=月、d=日)
     public init?(from: Int?) {
         guard let raw = from else { return nil }
         let y = raw/100_00
@@ -56,11 +61,14 @@ public struct SizYearMonthDay: Equatable {
         self.init(y, m, d)
     }
     
+    /// 文字列から「年・月・日」を得る
+    /// - Parameter yyyyMMdd: "yyyyMMdd"形式の文字列  (y=年、M=月、d=日)
     public init?(from yyyyMMdd: String) {
         guard yyyyMMdd.count == 8, let dateVal = Int(yyyyMMdd) else { return nil }
         self.init(from: dateVal)
     }
     
+    /// 現時刻の年月日
     public static var now: SizYearMonthDay {
         return SizYearMonthDay(from: Date())
     }
@@ -82,14 +90,18 @@ public struct SizYearMonthDay: Equatable {
         return comp
     }
     
+    /// 「日」を1日に変更
     public func asFirstDay() -> SizYearMonthDay {
         SizYearMonthDay(self.year, self.month, 1)
     }
     
+    /// TimeZoneをUTCに変換する
     public func toUtcDate() -> Date? {
         return toDate(timeZone: .utc)
     }
     
+    /// 数字化する
+    /// - Returns: yyyyMMdd (y=年、M=月, d=日)
     public func toInt() -> Int {
         return year*100_00 + month*100 + day
     }
@@ -110,6 +122,15 @@ public struct SizYearMonthDay: Equatable {
         return SizYearMonthDay(from: added)
     }
     
+    /// 「from」から「自分」の間の日数を計算する
+    ///
+    /// 例）
+    /// ```
+    /// SizYearMonthDay(from: 20210102)
+    ///     .days(SizYearMonthDay(from: 20210101)) // return: 1
+    /// ```
+    /// - Parameter from:開始日
+    /// - Returns: 日数、計算が不可能な場合は「nil」
     public func days(from: SizYearMonthDay) -> Int? {
         guard let fromDate = from.toDate() else { return nil }
         guard let toDate = self.toDate() else { return nil }
@@ -118,6 +139,7 @@ public struct SizYearMonthDay: Equatable {
     }
 }
 
+/// 「時・分・秒」を扱う
 public struct SizHourMinSec {
     public var hour = 0
     private var minute_raw = 0
@@ -131,6 +153,8 @@ public struct SizHourMinSec {
         self.second = second
     }
     
+    /// 数字から「時・分・秒」を得る
+    /// - Parameter rawVal: HHmmss (H=時（24H）、m=分、s=秒)
     public init?(from rawVal: Int?) {
         guard let rawVal = rawVal else { return nil }
         
@@ -155,6 +179,8 @@ public struct SizHourMinSec {
         self.init(hour: hour, minute: minute, second: secs % 60)
     }
     
+    /// 文字列から「時・分・秒」を得る
+    /// - Parameter text: HHmmss (H=時（24H）、m=分、s=秒)
     public init?(from text: String) {
         guard let rawVal = Int(text) else {
             return nil
@@ -188,6 +214,8 @@ public struct SizHourMinSec {
         }
     }
     
+    /// 数字化する
+    /// - Returns: HHmmss (H=時（24H）、m=分、s=秒)
     public func toInt() -> Int {
         return self.hour*100_00 + self.minute_raw*100 + self.second_raw
     }
@@ -197,10 +225,13 @@ public struct SizHourMinSec {
     }
 }
 
+/// 年月日と時分秒
 public struct SizDateTime {
     public var date: SizYearMonthDay
     public var time: SizHourMinSec
     
+    /// 数字から変換
+    /// - Parameter from: yyyyMMddHHmmss  (y=年、M=月、d=日、H=時（24H）、m=分、s=秒)
     public init?(from: Int64?) {
         guard let raw = from else { return nil }
         
@@ -230,7 +261,9 @@ public struct SizDateTime {
             time: SizHourMinSec(from: curr)
         )
     }
-
+    
+    /// 数字化する
+    /// - Returns: yyyyMMddHHmmss  (y=年、M=月、d=日、H=時（24H）、m=分、s=秒)
     public func toInt64() -> Int64 {
         Int64(date.toInt()*100_00_00) + Int64(time.toInt())
     }
