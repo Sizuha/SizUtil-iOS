@@ -295,6 +295,7 @@ open class SizCsvParser {
 	}
 	
 	private let skipLines: Int
+    public var encoding: String.Encoding = .utf8
 	
 	public required init(skipLines: Int = 0) {
 		self.skipLines = skipLines
@@ -320,7 +321,7 @@ open class SizCsvParser {
 		var backupText = ""
 		var openQuoteFlag = false
 		
-		SizLineReader(from: from).lines { line in
+        SizLineReader(from: from).lines(encoding: self.encoding) { line in
 			if rowIdx < self.skipLines {
 				rowIdx += 1
 			}
@@ -386,6 +387,7 @@ public class CsvSerializer {
 	
 	public var header = ""
 	private var fileHandle: FileHandle! = nil
+    public var encoding: String.Encoding = .utf8
 	
 	public init() {}
 	
@@ -420,13 +422,13 @@ public class CsvSerializer {
 		}
 		line.append("\n")
 		
-		if let data = line.data(using: .utf8) {
+        if let data = line.data(using: self.encoding) {
 			fileHandle.write(data)
 		}
 	}
 	
 	public func push(line: String) {
-		if let data = "\(line)\n".data(using: .utf8) {
+		if let data = "\(line)\n".data(using: self.encoding) {
 			fileHandle.write(data)
 		}
 	}
