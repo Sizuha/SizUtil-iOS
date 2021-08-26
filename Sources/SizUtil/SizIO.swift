@@ -295,10 +295,11 @@ open class SizCsvParser {
 	}
 	
 	private let skipLines: Int
-    public var encoding: String.Encoding = .utf8
+    public var encoding: String.Encoding
 	
-	public required init(skipLines: Int = 0) {
+    public required init(skipLines: Int = 0, encoding: String.Encoding = .utf8) {
 		self.skipLines = skipLines
+        self.encoding = encoding
 	}
     
     /// CSV形式のデータから、行(row)と列(column)を読み取る
@@ -387,9 +388,11 @@ public class CsvSerializer {
 	
 	public var header = ""
 	private var fileHandle: FileHandle! = nil
-    public var encoding: String.Encoding = .utf8
+    public var encoding: String.Encoding
 	
-	public init() {}
+    public init(encoding: String.Encoding = .utf8) {
+        self.encoding = encoding
+    }
 	
 	public func beginExport(file filepath: String) -> Bool {
 		guard FileManager.default.createFile(atPath: filepath, contents: nil) else {
@@ -419,6 +422,9 @@ public class CsvSerializer {
 			if !cell.isEmpty {
 				line.append(toCsvCellText(cell, quote: quote, withoutComma: true))
 			}
+            else if quote {
+                line.append("\"\"")
+            }
 		}
 		line.append("\n")
 		
