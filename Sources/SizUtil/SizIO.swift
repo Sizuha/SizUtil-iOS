@@ -336,14 +336,17 @@ open class SizCsvParser {
 					switch it {
 					case "\"":
 						if prevChar == "\"" {
-							output.append("\"")
-							prevChar = nil
+                            output.append("\"")
+                            prevChar = nil
+                            continue
 						}
 						else if openQuoteFlag {
 							openQuoteFlag = false
 						}
 						else {
 							openQuoteFlag = true
+                            prevChar = nil
+                            continue
 						}
 					case ",":
 						if openQuoteFlag {
