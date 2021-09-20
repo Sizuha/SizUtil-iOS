@@ -405,7 +405,7 @@ open class SizCsvParser {
 		}
 	}
     
-    public func parse(onReadColumns: (_ cols: [ColumnData]) -> Void) {
+    public func parseByRow(onReadRow: (_ row: [ColumnData]) -> Void) {
         guard let input = self.input else { return }
         
         var colIdx = 0
@@ -465,7 +465,7 @@ open class SizCsvParser {
                     backupText = "\(output)\n"
                 }
                 else {
-                    onReadColumns(cols)
+                    onReadRow(cols)
                     cols.removeAll()
                     
                     rowIdx += 1
