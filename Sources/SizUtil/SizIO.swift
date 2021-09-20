@@ -296,11 +296,27 @@ open class SizCsvParser {
 	
 	private let skipLines: Int
     public var encoding: String.Encoding
+    private var input: InputStream? = nil
 	
     public required init(skipLines: Int = 0, encoding: String.Encoding = .utf8) {
 		self.skipLines = skipLines
         self.encoding = encoding
 	}
+    
+    open func source(url: URL) -> Bool {
+        self.input = InputStream(url: url)
+        return self.input != nil
+    }
+    
+    open func source(stream: InputStream) {
+        self.input = stream
+    }
+    
+    open func source(csv: String) -> Bool {
+        guard let data = csv.data(using: self.encoding) else { return false }
+        self.input = InputStream(data: data)
+        return true
+    }
     
     /// CSV形式のデータから、行(row)と列(column)を読み取る
     ///
@@ -310,13 +326,22 @@ open class SizCsvParser {
     open func parse(from: URL, onReadColumn: (_ column: ColumnData) -> Void) {
         parse(from: InputStream(url: from)!, onReadColumn: onReadColumn)
     }
+    
+    /// CSV形式のデータから、行(row)と列(column)を読み取る
+    ///
+    /// - Parameters:
+    ///   - onReadColumn: 各行(row)の各列(column)を読み取った時の処理内容
+    open func parse(onReadColumn: (_ column: ColumnData) -> Void) {
+        guard let input = self.input else { return }
+        parse(from: input, onReadColumn: onReadColumn)
+    }
 
 	/// CSV形式のデータから、行(row)と列(column)を読み取る
 	///
 	/// - Parameters:
 	///   - from: CSVデータの入力ストリーム
 	///   - onReadColumn: 各行(row)の各列(column)を読み取った時の処理内容
-	open func parse(from: InputStream, onReadColumn: (_ column: ColumnData) -> Void) {
+	public func parse(from: InputStream, onReadColumn: (_ column: ColumnData) -> Void) {
 		var colIdx = 0
 		var rowIdx = 0
 		var backupText = ""
@@ -379,6 +404,77 @@ open class SizCsvParser {
 			}
 		}
 	}
+    
+    public func parse(onReadColumns: (_ cols: [ColumnData]) -> Void) {
+        guard let input = self.input else { return }
+        
+        var colIdx = 0
+        var rowIdx = 0
+        var backupText = ""
+        var openQuoteFlag = false
+        
+        var cols: [ColumnData] = []
+        
+        SizLineReader(from: input).lines(encoding: self.encoding) { line in
+            if rowIdx < self.skipLines {
+                rowIdx += 1
+            }
+            else {
+                var output = backupText
+                var prevChar: Character? = nil
+                
+                if !openQuoteFlag { colIdx = 0 }
+                
+                for it in line {
+                    switch it {
+                    case "\"":
+                        if prevChar == "\"" {
+                            output.append("\"")
+                            prevChar = nil
+                            continue
+                        }
+                        else if openQuoteFlag {
+                            openQuoteFlag = false
+                        }
+                        else {
+                            openQuoteFlag = true
+                            prevChar = nil
+                            continue
+                        }
+                    case ",":
+                        if openQuoteFlag {
+                            output.append(",")
+                        }
+                        else {
+                            cols.append( ColumnData(rowIdx: rowIdx, colIdx: colIdx, data: output) )
+                            output.removeAll()
+                            colIdx += 1
+                        }
+                    default: output.append(it)
+                    }
+                    
+                    prevChar = it
+                }
+                
+                if !openQuoteFlag && !output.isEmpty {
+                    cols.append( ColumnData(rowIdx: rowIdx, colIdx: colIdx, data: output) )
+                    output.removeAll()
+                }
+        
+                if openQuoteFlag {
+                    backupText = "\(output)\n"
+                }
+                else {
+                    onReadColumns(cols)
+                    cols.removeAll()
+                    
+                    rowIdx += 1
+                    colIdx = 0
+                    backupText = ""
+                }
+            }
+        }
+    }
 	
 }
 
