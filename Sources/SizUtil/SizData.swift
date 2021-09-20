@@ -83,6 +83,42 @@ public extension String {
         return String(self[from..<to])
     }
     
+    /// 文字列の一部を得る
+    /// - Parameter range: 範囲（NSRage型）
+    /// - Returns: 文字列の一部を得る
+    func substr(range: NSRange) -> String {
+        let start = self.index(self.startIndex, offsetBy: range.location)
+        let end = self.index(start, offsetBy: range.length)
+        let text = String(self[start..<end])
+        return text
+    }
+    
+    func stripLeft(characters: String) -> String {
+        var result = ""
+        result.reserveCapacity(self.count)
+        
+        for chr in self {
+            guard characters.contains(chr) == false else { continue }
+            result.append(chr)
+        }
+        return result
+    }
+    
+    func stripRight(characters: String) -> String {
+        var result = ""
+        result.reserveCapacity(self.count)
+        
+        for chr in self.reversed() {
+            guard characters.contains(chr) == false else { continue }
+            result.append(chr)
+        }
+        return String(result.reversed().map { $0 })
+    }
+    
+    func strip(characters: String) -> String {
+        stripLeft(characters: characters).stripRight(characters: characters)
+    }
+    
     /// 現在の文字列に対して、全体範囲のRangeオブジェクを得る
     func getNSRange() -> NSRange {
         return NSRange(location: 0, length: self.count)
