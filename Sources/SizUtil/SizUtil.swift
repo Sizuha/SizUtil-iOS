@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 
 public extension Int {
@@ -76,5 +77,10 @@ open class SizApplication {
     
     public static var shortVersion: String { getAppShortVer() }
     public static var buildVersion: String { getAppBuildVer() }
+    
+    @available(iOS 10.0, *)
+    public func openSettings() {
+        UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
+    }
     
 }
