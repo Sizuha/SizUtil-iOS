@@ -17,16 +17,16 @@ public extension Int {
 	}
 }
 
-func getAppShortVer() -> String {
+fileprivate func getAppShortVer() -> String {
 	return Bundle.main.infoDictionary!["CFBundleShortVersionString"] as? String ?? ""
 }
 
-func getAppBuildVer() -> String {
+fileprivate func getAppBuildVer() -> String {
 	return Bundle.main.infoDictionary!["CFBundleVersion"] as? String ?? ""
 }
 
 /// Excluding a File from Backups on iOS 5.1 and later (Swift)
-func addExcludedFromBackup(filePath: String) {
+fileprivate func addExcludedFromBackup(filePath: String) {
     let url = NSURL.fileURL(withPath: filePath) as NSURL
     do {
         try url.setResourceValue(true, forKey: URLResourceKey.isExcludedFromBackupKey)
@@ -74,7 +74,7 @@ extension Thread {
 
 open class SizApplication {
     
-    static var shortVersion: String { getAppShortVer() }
-    static var buildVersion: String { getAppBuildVer() }
+    public static var shortVersion: String { getAppShortVer() }
+    public static var buildVersion: String { getAppBuildVer() }
     
 }
