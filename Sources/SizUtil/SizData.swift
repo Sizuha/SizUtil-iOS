@@ -8,6 +8,16 @@
 import Foundation
 
 
+public extension Array {
+    
+    subscript(at index: Int) -> Element? {
+        if (0..<self.count).contains(index) {
+            return self[index]
+        }
+        return nil
+    }
+    
+}
 
 public extension Range {
     
