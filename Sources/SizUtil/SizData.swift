@@ -2,8 +2,6 @@
 //  SizData.swift
 //  
 //
-//  Created by Sizuha on 2020/10/22.
-//
 
 import Foundation
 

@@ -2,8 +2,6 @@
 //  SizDateTime.swift
 //  
 //
-//  Created by Sizuha on 2020/05/21.
-//
 
 import Foundation
 

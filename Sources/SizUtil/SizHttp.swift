@@ -1,8 +1,6 @@
 //
-//  File.swift
+//  SizHttp.swift
 //  
-//
-//  Created by Sizuha on 2020/05/20.
 //
 
 import Foundation

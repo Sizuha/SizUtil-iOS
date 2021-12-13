@@ -1,9 +1,6 @@
 //
 //  SizUtil.swift
-//  SizUtil
 //
-//  Created by Sizuha on 2019/04/10.
-//  Copyright © 2019 Sizuha. All rights reserved.
 //
 
 import Foundation

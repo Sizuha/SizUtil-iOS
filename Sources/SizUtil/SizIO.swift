@@ -1,7 +1,6 @@
 //
 //  SizIO.swift
 //
-//  Copyright © 2018 Sizuha. All rights reserved.
 //
 
 import Foundation
