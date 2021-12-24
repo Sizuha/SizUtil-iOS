@@ -27,10 +27,10 @@ final class SizUtilTests: XCTestCase {
 
 	func testRegex() {
 		let sample = "123456789"
-		XCTAssertTrue((?="[0-9]+") ~= sample)
-		XCTAssertTrue(sample ~= (?="[0-9]+"))
-		XCTAssertTrue((?="[A-Z]+") ~= sample)
-		XCTAssertTrue(sample ~= (?="[A-Z]+"))
+		XCTAssertTrue((?="[0-9]+") == sample)
+		XCTAssertTrue(sample == (?="[0-9]+"))
+		XCTAssertFalse((?="[A-Z]+") == sample)
+		XCTAssertFalse(sample == (?="[A-Z]+"))
 	}
 
     static var allTests = [

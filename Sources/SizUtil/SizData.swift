@@ -30,7 +30,7 @@ public extension Range {
 
 prefix operator ?=
 
-public extension String {
+extension String {
     
     /// Localeに関係なく、時間（TimeInterval）をテキストに変換
     /// - Parameters:
@@ -137,13 +137,13 @@ public extension String {
     static prefix func ?= (pattern: String) -> NSRegularExpression? {
         return try? NSRegularExpression(pattern: pattern, options: [])
     }
-    static func ~= (left: String, right: NSRegularExpression?) -> Bool {
+    static func == (left: String, right: NSRegularExpression?) -> Bool {
         return left.isMatch(right)
     }
-    static func ~= (left: NSRegularExpression?, right: String) -> Bool {
+    static func == (left: NSRegularExpression?, right: String) -> Bool {
         return right.isMatch(left)
     }
-    
+
     /// 現在の文字列が正規表現のパターンと一致するか？
     /// - Parameter regex: 正規表現
     /// - Returns: true = 一致する
