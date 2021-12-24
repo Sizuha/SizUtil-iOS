@@ -30,7 +30,7 @@ public extension Range {
 
 prefix operator ?=
 
-extension String {
+public extension String {
     
     /// Localeに関係なく、時間（TimeInterval）をテキストに変換
     /// - Parameters:
