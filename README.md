@@ -73,10 +73,18 @@ let today_hms = SizHourMinSec（from: today)
 ## 正規表現（文字列のパターン）
 ```swift
 let pattern = ?="ここに正規表現式を書く"
-if pattern ~= inputString /* String */ {
+if pattern == inputString {
 	// パターンが一致!!
 }
 ```
+又は
+```swift
+let pattern = "正規表現式".asPattern!
+if pattern.isMatch(inputString) {
+    // パターンが一致!!
+}
+```
+
 
 ## iCloud Backupから除く
 ```swift
