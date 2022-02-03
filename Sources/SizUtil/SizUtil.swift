@@ -15,11 +15,11 @@ public extension Int {
 	}
 }
 
-fileprivate func getAppShortVer() -> String {
+public func getAppShortVer() -> String {
 	return Bundle.main.infoDictionary!["CFBundleShortVersionString"] as? String ?? ""
 }
 
-fileprivate func getAppBuildVer() -> String {
+public func getAppBuildVer() -> String {
 	return Bundle.main.infoDictionary!["CFBundleVersion"] as? String ?? ""
 }
 
