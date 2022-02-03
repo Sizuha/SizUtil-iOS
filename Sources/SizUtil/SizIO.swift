@@ -282,7 +282,7 @@ open class SizCsvParser {
 		public var asFloat: Float? {
 			return Float(self.data)
 		}
-		var asDouble: Double? {
+		public var asDouble: Double? {
 			return Double(self.data)
 		}
 		public var asBool: Bool {
