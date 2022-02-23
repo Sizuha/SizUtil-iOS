@@ -619,7 +619,7 @@ public extension FileManager {
     }
     
     // TODO 正確には、ファイル名ではなく、属性で確認する必要がある
-    func scanDirs(url: URL) -> [URL] {
+    func scanDirs(url: URL, sortDesc: Bool = true) -> [URL] {
         var result = [URL]()
         
         if let urls = try? self.contentsOfDirectory(
@@ -635,14 +635,16 @@ public extension FileManager {
         }
         
         result.sort {
-            $0.absoluteString > $1.absoluteString
+            sortDesc
+                ? $0.absoluteString > $1.absoluteString
+                : $0.absoluteString < $1.absoluteString
         }
         
         return result
     }
     
     // TODO 正確には、ファイル名ではなく、属性で確認する必要がある
-    func scanFiles(url: URL) -> [URL] {
+    func scanFiles(url: URL, sortDesc: Bool = true) -> [URL] {
         var result = [URL]()
         
         if let urls = try? self.contentsOfDirectory(
@@ -658,7 +660,9 @@ public extension FileManager {
         }
         
         result.sort {
-            $0.absoluteString > $1.absoluteString
+            sortDesc
+                ? $0.absoluteString > $1.absoluteString
+                : $0.absoluteString < $1.absoluteString
         }
         
         return result

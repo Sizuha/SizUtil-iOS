@@ -23,6 +23,111 @@ public extension TimeZone {
 
 fileprivate let stdCalendar = Calendar.standard
 
+
+// MARK: - Year Month
+
+public struct SizYearMonth: Equatable {
+    
+    public var year: Int
+    public var month: Int
+    
+    public init() {
+        year = 0
+        month = 0
+    }
+    
+    public init(from yyyyMM: Int) {
+        year = yyyyMM / 100
+        month = yyyyMM - year*100
+    }
+    
+    public init(from yyyyMM: String) {
+        let value = Int(yyyyMM) ?? 0
+        self.init(from: value)
+    }
+    
+    public init(year: Int, month: Int) {
+        self.init(from: year*100 + month)
+    }
+
+    public init(from date: Date) {
+        let cal = Calendar(identifier: .gregorian)
+        year = cal.component(.year, from: date)
+        month = cal.component(.month, from: date)
+    }
+    
+    public init(from other: Self) {
+        self.year = other.year
+        self.month = other.month
+    }
+    
+    public func toInt() -> Int {
+        year*100 + month
+    }
+    
+    public mutating func moveNextMonth() {
+        self.month += 1
+        if self.month > 12 {
+            self.year += 1
+            self.month = 1
+        }
+    }
+    
+    public mutating func movePrevMonth() {
+        self.month -= 1
+        if self.month <= 0 {
+            self.year -= 1
+            self.month = 12
+        }
+    }
+    
+    public func nextMonth() -> Self {
+        var result = Self(from: self)
+        result.moveNextMonth()
+        return result
+    }
+    
+    public func prevMonth() -> Self {
+        var result = Self(from: self)
+        result.movePrevMonth()
+        return result
+    }
+
+    
+    public static var now: Self { Self(from: Date()) }
+
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.toInt() == rhs.toInt()
+    }
+    
+    public var lastDayInMonth: Int {
+        if self.month == 2 {
+            return Self.isLeapYear(self.year) ? 29 : 28
+        }
+        else if [1,3,5,7,8,10,12].contains(self.month) {
+            return 31
+        }
+        else {
+            return 30
+        }
+    }
+    
+    /// 閏年（じゅんねん、うるうどし）か？
+    public static func isLeapYear(_ year: Int) -> Bool {
+        if year % 4 == 0 {
+            if year % 100 == 0 {
+                return year % 400 == 0
+            }
+            return true
+        }
+        return false
+    }
+
+}
+
+
+// MARK: - Year Month Day
+
 /// 「年・月・日」を扱う
 public struct SizYearMonthDay: Equatable {
     public let year: Int
@@ -137,6 +242,9 @@ public struct SizYearMonthDay: Equatable {
     }
 }
 
+
+// MARK: - Hour Min Sec
+
 /// 「時・分・秒」を扱う
 public struct SizHourMinSec {
     public var hour = 0
@@ -222,6 +330,8 @@ public struct SizHourMinSec {
         self.hour*60*60 + self.minute*60
     }
 }
+
+// MARK: - Date & Time
 
 /// 年月日と時分秒
 public struct SizDateTime {
