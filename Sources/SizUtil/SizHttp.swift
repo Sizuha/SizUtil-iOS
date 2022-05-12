@@ -94,12 +94,12 @@ public class SizHttp {
     ) {
         var request: URLRequest = URLRequest(url: url)
         request.httpMethod = HttpMethod.post.rawValue
-        requestMultipart(&request, params: params, onComplete: onComplete)
+        self.request(&request, multipart: params, onComplete: onComplete)
     }
     
-    public static func requestMultipart(
+    public static func request(
         _ request: inout URLRequest,
-        params: [String: Any],
+        multipart params: [String: Any],
         makeFileName: ((_ key: String)->String)? = nil,
         onComplete: @escaping (Data?, URLResponse?, Error?) -> Void
     ) {
@@ -211,12 +211,12 @@ public class SizHttp {
         }
 
         var req = URLRequest(url: url)
-        try requestWithJson(&req, body: body, onComplete: onComplete)
+        try request(&req, json: body, onComplete: onComplete)
     }
     
-    public static func requestWithJson(
+    public static func request(
         _ request: inout URLRequest,
-        body: NSDictionary?,
+        json body: NSDictionary?,
         onComplete: @escaping (Data?, URLResponse?, Error?) -> Void
     ) throws {
         guard request.httpMethod != HttpMethod.get.rawValue else {
