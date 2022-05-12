@@ -45,7 +45,11 @@ public struct SizYearMonth: Equatable {
         let value = Int(yyyyMM) ?? 0
         self.init(from: value)
     }
-    
+
+    public init(_ year: Int, _ month: Int) {
+        self.init(from: year*100 + month)
+    }
+
     public init(year: Int, month: Int) {
         self.init(from: year*100 + month)
     }

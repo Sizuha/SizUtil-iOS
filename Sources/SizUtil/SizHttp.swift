@@ -7,7 +7,8 @@ import Foundation
 import UIKit
 
 public class SizHttp {
-    public static let MIME_IMAGE_JPEG = "image/jpg"
+    public static var contentType_Image = "image/jpg"
+    public static var userAgent: String?
     
     public static var session: URLSession {
         return URLSession.shared
@@ -49,32 +50,13 @@ public class SizHttp {
         return result
     }
     
-    /// パラメーター（Query String）なしで「HTTP GET」
-    /// - Parameters:
-    ///   - url: URL
-    ///   - onComplete: 処理後
-    public static func get(url: URL, onComplete: @escaping (Data?, URLResponse?, Error?) -> Void) {
-        var request: URLRequest = URLRequest(url: url)
-        request.httpMethod = HttpMethod.get.rawValue
-        session.dataTask(with: request, completionHandler: onComplete).resume()
-    }
-    
     /// パラメーター（Query String）を入れて「HTTP GET」
     /// - Parameters:
     ///   - url: URL
     ///   - params: パラメーター（Form Data）
     ///   - onComplete: 処理後
-    public static func get(url: URL, params: [String:String?], onComplete: @escaping (Data?, URLResponse?, Error?) -> Void) {
-        var comp = URLComponents(url: url, resolvingAgainstBaseURL: false)!
-        var items = [URLQueryItem]()
-        for (key,data) in params {
-            items.append(URLQueryItem(name: key, value: data))
-        }
-        comp.queryItems = items
-        
-        var request: URLRequest = URLRequest(url: comp.url!)
-        request.httpMethod = HttpMethod.get.rawValue
-        session.dataTask(with: request, completionHandler: onComplete).resume()
+    public static func get(url: URL, params: [String:String?] = [:], onComplete: @escaping (Data?, URLResponse?, Error?) -> Void) {
+        request(method: .get, url: url, params: params, onComplete: onComplete)
     }
     
     /// HTTP POST
@@ -112,6 +94,21 @@ public class SizHttp {
     ) {
         var request: URLRequest = URLRequest(url: url)
         request.httpMethod = HttpMethod.post.rawValue
+        requestMultipart(&request, params: params, onComplete: onComplete)
+    }
+    
+    public static func requestMultipart(
+        _ request: inout URLRequest,
+        params: [String: Any],
+        makeFileName: ((_ key: String)->String)? = nil,
+        onComplete: @escaping (Data?, URLResponse?, Error?) -> Void
+    ) {
+        guard let _ = request.url, request.httpMethod != HttpMethod.get.rawValue else {
+            assert(false)
+            return
+        }
+        
+        setupRequestHeader(&request)
         
         let uuid = UUID().uuidString
         let boundary = "---------------------------\(uuid)"
@@ -128,7 +125,7 @@ public class SizHttp {
 
                 body.append(boundaryText.data(using: .utf8)!)
                 body.append("Content-Disposition: form-data; name=\"\(param.key)\"; filename=\"\(filename)\"\r\n".data(using: .utf8)!)
-                body.append("Content-Type: \(SizHttp.MIME_IMAGE_JPEG)\r\n\r\n".data(using: .utf8)!)
+                body.append("Content-Type: \(SizHttp.contentType_Image)\r\n\r\n".data(using: .utf8)!)
 
                 body.append(imageData!)
                 body.append("\r\n".data(using: .utf8)!)
@@ -146,13 +143,12 @@ public class SizHttp {
                 body.append(data)
                 body.append("\r\n".data(using: .utf8)!)
 
-            case let value as Any:
+            default:
+                let value = param.value
                 body.append(boundaryText.data(using: .utf8)!)
                 body.append("Content-Disposition: form-data; name=\"\(param.key)\"\r\n\r\n".data(using: .utf8)!)
                 body.append(String(describing: value).data(using: .utf8)!)
                 body.append("\r\n".data(using: .utf8)!)
-
-            default: break
             }
         }
         body.append("--\(boundary)--\r\n".data(using: .utf8)!)
@@ -163,28 +159,72 @@ public class SizHttp {
         session.dataTask(with: request, completionHandler: onComplete).resume()
     }
     
-    public static func request(method: HttpMethod, url: URL, params: [String:String?], onComplete: @escaping (Data?, URLResponse?, Error?) -> Void) {
-        if method == .get {
-            self.get(url: url, params: params, onComplete: onComplete)
+    public static func request(
+        method: HttpMethod,
+        url: URL,
+        params: [String:String?] = [:],
+        onComplete: @escaping (Data?, URLResponse?, Error?) -> Void
+    ) {
+        var request: URLRequest = URLRequest(url: url)
+        request.httpMethod = method.rawValue
+        self.request(&request, params: params, onComplete: onComplete)
+    }
+    
+    public static func request(
+        _ request: inout URLRequest,
+        params: [String:String?] = [:],
+        onComplete: @escaping (Data?, URLResponse?, Error?) -> Void
+    ) {
+        guard let url = request.url else {
+            assert(false)
             return
         }
         
-        var request: URLRequest = URLRequest(url: url)
-        request.httpMethod = method.rawValue
-//        request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        request.httpBody = SizHttp.makeFormParamStr(params).data(using: .utf8)
-        
+        setupRequestHeader(&request)
+        if !params.isEmpty {
+            if request.httpMethod == HttpMethod.get.rawValue {
+                var comp = URLComponents(url: url, resolvingAgainstBaseURL: false)!
+                var items = [URLQueryItem]()
+                for (key,data) in params {
+                    items.append(URLQueryItem(name: key, value: data))
+                }
+                comp.queryItems = items
+                request.url = comp.url
+            }
+            else {
+                //request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+                request.httpBody = SizHttp.makeFormParamStr(params).data(using: .utf8)
+            }
+        }
         session.dataTask(with: request, completionHandler: onComplete).resume()
     }
     
-    public static func requestWithJson(method: HttpMethod, url: URL, body: NSDictionary?, onComplete: @escaping (Data?, URLResponse?, Error?) -> Void) throws {
+    public static func requestWithJson(
+        method: HttpMethod,
+        url: URL,
+        body: NSDictionary?,
+        onComplete: @escaping (Data?, URLResponse?, Error?) -> Void
+    ) throws {
         if method == .get {
             self.get(url: url, onComplete: onComplete)
             return
         }
+
+        var req = URLRequest(url: url)
+        try requestWithJson(&req, body: body, onComplete: onComplete)
+    }
+    
+    public static func requestWithJson(
+        _ request: inout URLRequest,
+        body: NSDictionary?,
+        onComplete: @escaping (Data?, URLResponse?, Error?) -> Void
+    ) throws {
+        guard request.httpMethod != HttpMethod.get.rawValue else {
+            self.request(&request, onComplete: onComplete)
+            return
+        }
         
-        var request: URLRequest = URLRequest(url: url)
-        request.httpMethod = method.rawValue
+        setupRequestHeader(&request)
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         
@@ -193,6 +233,12 @@ public class SizHttp {
         }
         
         session.dataTask(with: request, completionHandler: onComplete).resume()
+    }
+    
+    private static func setupRequestHeader(_ request: inout URLRequest) {
+        if let userAgent = Self.userAgent {
+            request.addValue(userAgent, forHTTPHeaderField: "User-Agent")
+        }
     }
     
 }
