@@ -26,7 +26,7 @@ fileprivate let stdCalendar = Calendar.standard
 
 // MARK: - Year Month
 
-public struct SizYearMonth: Equatable {
+public struct SizYearMonth: Equatable, Comparable {
     
     public var year: Int
     public var month: Int
@@ -104,6 +104,10 @@ public struct SizYearMonth: Equatable {
         lhs.toInt() == rhs.toInt()
     }
     
+    public static func < (lhs: SizYearMonth, rhs: SizYearMonth) -> Bool {
+        lhs.toInt() < rhs.toInt()
+    }
+    
     public var lastDayInMonth: Int {
         if self.month == 2 {
             return Self.isLeapYear(self.year) ? 29 : 28
@@ -133,7 +137,7 @@ public struct SizYearMonth: Equatable {
 // MARK: - Year Month Day
 
 /// 「年・月・日」を扱う
-public struct SizYearMonthDay: Equatable {
+public struct SizYearMonthDay: Equatable, Comparable {
     public let year: Int
     public let month: Int
     public let day: Int
@@ -210,11 +214,15 @@ public struct SizYearMonthDay: Equatable {
     /// 数字化する
     /// - Returns: yyyyMMdd (y=年、M=月, d=日)
     public func toInt() -> Int {
-        return year*100_00 + month*100 + day
+        year*100_00 + month*100 + day
     }
     
     public static func == (lhs: SizYearMonthDay, rhs: SizYearMonthDay) -> Bool {
-        return lhs.toInt() == rhs.toInt()
+        lhs.toInt() == rhs.toInt()
+    }
+    
+    public static func < (lhs: SizYearMonthDay, rhs: SizYearMonthDay) -> Bool {
+        lhs.toInt() < rhs.toInt()
     }
     
     public func add(year: Int = 0, month: Int = 0, day: Int = 0) -> SizYearMonthDay? {
@@ -250,7 +258,7 @@ public struct SizYearMonthDay: Equatable {
 // MARK: - Hour Min Sec
 
 /// 「時・分・秒」を扱う
-public struct SizHourMinSec {
+public struct SizHourMinSec: Equatable, Comparable {
     public var hour = 0
     private var minute_raw = 0
     private var second_raw = 0
@@ -333,12 +341,21 @@ public struct SizHourMinSec {
     public func toSeconds() -> Int {
         self.hour*60*60 + self.minute*60
     }
+    
+    public static func == (lhs: SizHourMinSec, rhs: SizHourMinSec) -> Bool {
+        lhs.toInt() == rhs.toInt()
+    }
+    
+    public static func < (lhs: SizHourMinSec, rhs: SizHourMinSec) -> Bool {
+        lhs.toInt() < rhs.toInt()
+    }
+
 }
 
 // MARK: - Date & Time
 
 /// 年月日と時分秒
-public struct SizDateTime {
+public struct SizDateTime: Equatable, Comparable {
     public var date: SizYearMonthDay
     public var time: SizHourMinSec
     
@@ -396,5 +413,12 @@ public struct SizDateTime {
         comp.timeZone = timeZone
         return comp
     }
-
+    
+    public static func == (lhs: SizDateTime, rhs: SizDateTime) -> Bool {
+        lhs.toInt64() == rhs.toInt64()
+    }
+    
+    public static func < (lhs: SizDateTime, rhs: SizDateTime) -> Bool {
+        lhs.toInt64() < rhs.toInt64()
+    }
 }
