@@ -379,4 +379,22 @@ public struct SizDateTime {
     public func toInt64() -> Int64 {
         Int64(date.toInt()*100_00_00) + Int64(time.toInt())
     }
+    
+    public func toDate(timeZone: TimeZone = TimeZone.current) -> Date? {
+        let comp = toDateComponents(timeZone: timeZone)
+        return stdCalendar.date(from: comp)
+    }
+    
+    public func toDateComponents(timeZone: TimeZone = TimeZone.current) -> DateComponents {
+        var comp = DateComponents()
+        comp.year = self.date.year
+        comp.month = self.date.month
+        comp.day = self.date.day
+        comp.hour = self.time.hour
+        comp.minute = self.time.minute
+        comp.second = self.time.second
+        comp.timeZone = timeZone
+        return comp
+    }
+
 }

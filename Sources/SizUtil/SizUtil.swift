@@ -16,11 +16,11 @@ public extension Int {
 }
 
 public func getAppShortVer() -> String {
-	return Bundle.main.infoDictionary!["CFBundleShortVersionString"] as? String ?? ""
+	Bundle.main.infoDictionary!["CFBundleShortVersionString"] as? String ?? ""
 }
 
 public func getAppBuildVer() -> String {
-	return Bundle.main.infoDictionary!["CFBundleVersion"] as? String ?? ""
+	Bundle.main.infoDictionary!["CFBundleVersion"] as? String ?? ""
 }
 
 /// Excluding a File from Backups on iOS 5.1 and later (Swift)
@@ -72,6 +72,9 @@ extension Thread {
 
 open class SizApplication {
     
+    public static var appName: String {
+        Bundle.main.infoDictionary!["CFBundleName"] as? String ?? ""
+    }
     public static var shortVersion: String { getAppShortVer() }
     public static var buildVersion: String { getAppBuildVer() }
     
