@@ -65,6 +65,11 @@ public struct SizYearMonth: Equatable, Comparable {
         self.month = other.month
     }
     
+    public init(from ymd: SizYearMonthDay) {
+        self.year = ymd.year
+        self.month = ymd.month
+    }
+    
     public func toInt() -> Int {
         year*100 + month
     }
@@ -209,6 +214,10 @@ public struct SizYearMonthDay: Equatable, Comparable {
     /// TimeZoneをUTCに変換する
     public func toUtcDate() -> Date? {
         return toDate(timeZone: .utc)
+    }
+    
+    public func toYearMonth() -> SizYearMonth {
+        SizYearMonth(from: self)
     }
     
     /// 数字化する
