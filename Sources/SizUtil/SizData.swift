@@ -163,6 +163,11 @@ public extension String {
     var deletingPathExtension: String {
         NSString(string: self).deletingPathExtension
     }
+    
+    func trim() -> String {
+        return trimmingCharacters(in: NSCharacterSet.whitespaces)
+    }
+    
 }
 
 public extension NSRegularExpression {
