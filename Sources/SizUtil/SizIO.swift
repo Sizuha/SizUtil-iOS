@@ -618,7 +618,7 @@ public extension FileManager {
         (try? attributesOfItem(atPath: url.path)[.size]) as? Int ?? 0
     }
     
-    // TODO 正確には、ファイル名ではなく、属性で確認する必要がある
+    // TODO: 正確には、ファイル名ではなく、属性で確認する必要がある
     func scanDirs(url: URL, sortDesc: Bool = true) -> [URL] {
         var result = [URL]()
         
@@ -643,7 +643,7 @@ public extension FileManager {
         return result
     }
     
-    // TODO 正確には、ファイル名ではなく、属性で確認する必要がある
+    // TODO: 正確には、ファイル名ではなく、属性で確認する必要がある
     func scanFiles(url: URL, sortDesc: Bool = true) -> [URL] {
         var result = [URL]()
         

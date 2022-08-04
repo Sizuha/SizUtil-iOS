@@ -50,9 +50,9 @@ public extension URL {
 
 // MARK: - Thread
 
-extension Thread {
+public extension Thread {
     
-    public static func runOnMainThread(_ proc: (()->Void)?) {
+    static func runOnMainThread(_ proc: (()->Void)?) {
         guard let proc = proc else { return }
         
         if Thread.isMainThread {
@@ -79,7 +79,7 @@ open class SizApplication {
     public static var buildVersion: String { getAppBuildVer() }
     
     @available(iOS 10.0, *)
-    public func openSettings() {
+    public static func openSettings() {
         UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
     }
     
