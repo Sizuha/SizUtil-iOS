@@ -575,6 +575,99 @@ public class CsvDeserializer<T: CsvSerializable> {
 	
 }
 
+/// CSV形式のデータを読み取る
+///
+/// - Parameters:
+///   - url: CSVファイルのURL
+///   - skipLines: 最初のn行を無視する
+///   - onReadRow: 各行(row)のデータを読み取った時の処理内容
+/// - Throws: CSVファイルの読み取り失敗する場合
+@available(iOS 15.0, *)
+public func parseCsvAsync(
+    url: URL,
+    skipLines: Int = 0,
+    onReadRow: (_ row: [SizCsvParser.ColumnData]) -> Void
+) async throws {
+    var colInt = 0
+    var rowInt = 0
+    var backupTextStr = ""
+    var openQuoteFlag = false
+    var colsArr: [SizCsvParser.ColumnData] = []
+    
+    for try await line in url.lines {
+        guard rowInt >= skipLines else {
+            rowInt += 1
+            continue
+        }
+        
+        var outputStr = backupTextStr
+        var prevChar: Character? = nil
+        
+        if !openQuoteFlag { colInt = 0 }
+        
+        for chr in line {
+            switch chr {
+            case "\"":
+                if prevChar == "\"" {
+                    outputStr.append("\"")
+                    prevChar = nil
+                    continue
+                }
+                else if openQuoteFlag {
+                    openQuoteFlag = false
+                }
+                else {
+                    openQuoteFlag = true
+                    prevChar = nil
+                    continue
+                }
+            case ",":
+                if openQuoteFlag {
+                    outputStr.append(",")
+                }
+                else {
+                    colsArr.append(
+                        SizCsvParser.ColumnData(
+                            rowIdx: rowInt,
+                            colIdx: colInt,
+                            data: outputStr
+                        )
+                    )
+                    outputStr.removeAll()
+                    colInt += 1
+                }
+            default: outputStr.append(chr)
+            }
+            
+            prevChar = chr
+        }
+        
+        if !openQuoteFlag && !outputStr.isEmpty {
+            colsArr.append(
+                SizCsvParser.ColumnData(
+                    rowIdx: rowInt,
+                    colIdx: colInt,
+                    data: outputStr
+                )
+            )
+            outputStr.removeAll()
+        }
+
+        if openQuoteFlag {
+            backupTextStr = "\(outputStr)\n"
+        }
+        else {
+            onReadRow(colsArr)
+            colsArr.removeAll()
+            
+            rowInt += 1
+            colInt = 0
+            backupTextStr = ""
+        }
+    }
+}
+
+
 //MARK: - Extensions
 
 public extension OutputStream {

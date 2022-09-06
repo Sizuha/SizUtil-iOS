@@ -74,18 +74,18 @@ public extension String {
     func subStr(from: Int, length: Int) -> String {
         guard length > 0 else { fatalError("lengthは1以上にすること") }
         
-        let to = self.index(self.startIndex, offsetBy: from + length)
-        let from = self.index(self.startIndex, offsetBy: from)
-        return String(self[from..<to])
+        let toIndex = self.index(self.startIndex, offsetBy: from + length)
+        let fromIndex = self.index(self.startIndex, offsetBy: from)
+        return String(self[fromIndex..<toIndex])
     }
     
     /// 文字列の一部を得る（fromの位置から最後まで）
     /// - Parameter from: 開始Index
     /// - Returns: 文字列の一部を得る
     func subStr(from: Int) -> String {
-        let to = self.endIndex
-        let from = self.index(self.startIndex, offsetBy: from)
-        return String(self[from..<to])
+        let toIndex = self.endIndex
+        let fromIndex = self.index(self.startIndex, offsetBy: from)
+        return String(self[fromIndex..<toIndex])
     }
     
     /// 文字列の一部を得る
@@ -126,7 +126,7 @@ public extension String {
     
     /// 現在の文字列に対して、全体範囲のRangeオブジェクを得る
     func getNSRange() -> NSRange {
-        return NSRange(location: 0, length: self.count)
+        NSRange(location: 0, length: self.count)
     }
     
     /// 正規表現のパターン式化する
@@ -135,20 +135,24 @@ public extension String {
     }
     
     static prefix func ?= (pattern: String) -> NSRegularExpression? {
-        return try? NSRegularExpression(pattern: pattern, options: [])
+        try? NSRegularExpression(pattern: pattern, options: [])
     }
     static func == (left: String, right: NSRegularExpression?) -> Bool {
-        return left.isMatch(right)
+        left.isMatch(right)
     }
     static func == (left: NSRegularExpression?, right: String) -> Bool {
-        return right.isMatch(left)
+        right.isMatch(left)
     }
 
     /// 現在の文字列が正規表現のパターンと一致するか？
     /// - Parameter regex: 正規表現
     /// - Returns: true = 一致する
     func isMatch(_ regex: NSRegularExpression?) -> Bool {
-        return regex?.numberOfMatches(in: self, options: [], range: getNSRange()) ?? 0 > 0
+        regex?.numberOfMatches(in: self, options: [], range: getNSRange()) ?? 0 > 0
+    }
+    
+    func isMatch(pattern: String) -> Bool {
+        pattern.asPattern?.isMatch(self) ?? false
     }
     
     
@@ -156,7 +160,7 @@ public extension String {
     /// - Parameter regex: 正規表現
     /// - Returns: true =　一致しない
     func isNotMatch(_ regex: NSRegularExpression?) -> Bool {
-        return !isMatch(regex)
+        isMatch(regex)
     }
     
     /// A new string made by deleting the extension (if any, and only the last) from the receiver.
@@ -165,7 +169,7 @@ public extension String {
     }
     
     func trim() -> String {
-        return trimmingCharacters(in: NSCharacterSet.whitespaces)
+        trimmingCharacters(in: NSCharacterSet.whitespaces)
     }
     
 }
