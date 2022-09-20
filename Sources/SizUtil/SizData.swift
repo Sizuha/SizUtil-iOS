@@ -151,10 +151,31 @@ public extension String {
         regex?.numberOfMatches(in: self, options: [], range: getNSRange()) ?? 0 > 0
     }
     
+    /// 現在の文字列が正規表現のパターンと一致するか？
+    ///
+    /// 下記のコードと同じ
+    /// ```
+    /// "対象".range(of: "正規表現", options: .regularExpression) != nil
+    /// ```
+    /// - Parameter pattern: 正規表現
+    /// - Returns: true = 一致する
     func isMatch(pattern: String) -> Bool {
-        pattern.asPattern?.isMatch(self) ?? false
+        range(of: pattern, options: .regularExpression) != nil
+        //pattern.asPattern?.isMatch(self) ?? false
     }
     
+    /// 現在の文字列が正規表現のパターンと一致しないか？
+    ///
+    /// 下記のコードと同じ
+    /// ```
+    /// "対象".range(of: "正規表現", options: .regularExpression) == nil
+    /// ```
+    /// - Parameter regex: 正規表現
+    /// - Returns: true =　一致しない
+    func isNotMatch(pattern: String) -> Bool {
+        range(of: pattern, options: .regularExpression) == nil
+        //!isMatch(pattern: pattern)
+    }
     
     /// 現在の文字列が正規表現のパターンと一致しないか？
     /// - Parameter regex: 正規表現
