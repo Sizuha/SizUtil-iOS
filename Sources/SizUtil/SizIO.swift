@@ -5,21 +5,6 @@
 
 import Foundation
 
-public class SizPath {
-	
-	public static var appDocument: String {
-		return NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!
-	}
-	
-	public static var appSupport: String {
-		return NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .userDomainMask, true).first!
-	}
-	
-	public static var appTemp: String {
-		return NSTemporaryDirectory()
-	}
-	
-}
 
 public func copyAsArray(from: UnsafeMutablePointer<UInt8>, count: Int) -> [UInt8] {
 	var result = [UInt8](repeating: 0, count: count)
@@ -280,52 +265,45 @@ public extension FileManager {
     
     // TODO: 正確には、ファイル名ではなく、属性で確認する必要がある
     func scanDirs(url: URL, sortDesc: Bool = true) -> [URL] {
-        var result = [URL]()
-        
-        if let urls = try? self.contentsOfDirectory(
+        guard let urls = try? self.contentsOfDirectory(
             at: url,
             includingPropertiesForKeys: [.isDirectoryKey],
-            options: [.skipsHiddenFiles])
-        {
-            for url in urls {
-                if url.pathExtension.isEmpty {
-                    result.append(url)
-                }
-            }
+            options: [.skipsHiddenFiles]
+        )
+        else {
+            return []
         }
         
-        result.sort {
+        return urls.filter { url in
+            url.pathExtension.isEmpty
+        }.sorted {
             sortDesc
                 ? $0.absoluteString > $1.absoluteString
                 : $0.absoluteString < $1.absoluteString
         }
-        
-        return result
     }
     
-    // TODO: 正確には、ファイル名ではなく、属性で確認する必要がある
-    func scanFiles(url: URL, sortDesc: Bool = true) -> [URL] {
-        var result = [URL]()
-        
-        if let urls = try? self.contentsOfDirectory(
+    func scanFiles(
+        url: URL,
+        sortDesc: Bool = true,
+        includeWithoutExt: Bool = false
+    ) -> [URL] {
+        guard let urls = try? self.contentsOfDirectory(
             at: url,
             includingPropertiesForKeys: nil,
-            options: [.skipsHiddenFiles])
-        {
-            for url in urls {
-                if url.pathExtension.isEmpty == false {
-                    result.append(url)
-                }
-            }
+            options: [.skipsHiddenFiles]
+        )
+        else {
+            return []
         }
         
-        result.sort {
+        return urls.filter { url in
+            includeWithoutExt || url.pathExtension.isEmpty == false
+        }.sorted {
             sortDesc
                 ? $0.absoluteString > $1.absoluteString
                 : $0.absoluteString < $1.absoluteString
         }
-        
-        return result
     }
     
 }
@@ -334,14 +312,7 @@ public extension Bundle {
     
     func loadText(name: String, ext: String = "txt") -> String? {
         guard let filepath = self.path(forResource: name, ofType: ext) else { return nil }
-        
-        do {
-            let contents = try String(contentsOfFile: filepath)
-            return contents
-        }
-        catch {
-            return nil
-        }
+        return try? String(contentsOfFile: filepath)
     }
     
 }

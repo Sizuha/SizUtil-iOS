@@ -8,7 +8,12 @@ import Foundation
 
 public extension Array {
     
+    /*
     subscript(at index: Index) -> Element? {
+        return indices.contains(index) ? self[index] : nil
+    }*/
+    
+    func at(_ index: Index) -> Element? {
         return indices.contains(index) ? self[index] : nil
     }
     
@@ -32,7 +37,7 @@ prefix operator ?=
 
 public extension String {
     
-    /// Localeに関係なく、時間（TimeInterval）をテキストに変換
+    /// スケールとしての時間（TimeInterval）をテキストに変換。例えば「48時間30分」など
     /// - Parameters:
     ///   - timeInterval: 時間（単位：秒）
     ///   - format: 基本「%02d:%02d:%02d」、前から順番に「時」「分」「秒」
