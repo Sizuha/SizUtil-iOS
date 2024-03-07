@@ -35,7 +35,7 @@ public extension Range {
 
 prefix operator ?=
 
-extension StringProtocol {
+public extension StringProtocol {
     /*
      使い方＞
      let str = "Hello, playground, playground, playground"
