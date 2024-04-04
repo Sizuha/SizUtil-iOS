@@ -117,12 +117,10 @@ public struct SizYearMonth: Equatable, Comparable {
         if self.month == 2 {
             return Self.isLeapYear(self.year) ? 29 : 28
         }
-        else if [1,3,5,7,8,10,12].contains(self.month) {
+        if [1,3,5,7,8,10,12].contains(self.month) {
             return 31
         }
-        else {
-            return 30
-        }
+        return 30
     }
     
     /// 閏年（じゅんねん、うるうどし）か？
@@ -323,7 +321,7 @@ public struct SizHourMinSec: Equatable, Comparable {
         self.second_raw = cal.component(.second, from: date)
     }
     
-    static var now: SizHourMinSec { SizHourMinSec(from: Date()) }
+    public static var now: SizHourMinSec { SizHourMinSec(from: Date()) }
 
     public var minute: Int {
         get { return self.minute_raw }

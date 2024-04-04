@@ -38,6 +38,7 @@ prefix operator ?=
 public extension StringProtocol {
     /*
      使い方＞
+                01234567890123456789012345678901234567890
      let str = "Hello, playground, playground, playground"
      str.index(of: "play")      // 7
      str.endIndex(of: "play")   // 11
